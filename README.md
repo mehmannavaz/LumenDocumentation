@@ -13,3 +13,6 @@ Fell free to add anything or complete the Phases inside milestone, I use this pr
 - The main idea need some polish
 - Automatically update system
 - Better flexibility to customization
+
+## Remember for myself:
+After this phase we just separated this HTML to make it easy to change and a build script that combine 'em together.
