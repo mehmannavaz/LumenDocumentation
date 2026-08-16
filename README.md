@@ -13,6 +13,7 @@ Fell free to add anything or complete the Phases inside milestone, I use this pr
 - The main idea need some polish
 - Automatically update system
 - Better flexibility to customization
+- A Screen shot engine with reacting on clicks(live test with only images and not the real site/app to show in-work)
 
 ## Remember for myself:
 After this phase we just separated this HTML to make it easy to change and a build script that combine 'em together.
