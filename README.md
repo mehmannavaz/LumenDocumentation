@@ -14,6 +14,7 @@ Fell free to add anything or complete the Phases inside milestone, I use this pr
 - Automatically update system
 - Better flexibility to customization
 - A Screen shot engine with reacting on clicks(live test with only images and not the real site/app to show in-work)
+- Update using git or access to github page and update it using token and it saved locally in browser
 
 ## Remember for myself:
 After this phase we just separated this HTML to make it easy to change and a build script that combine 'em together.
