@@ -8,7 +8,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css">
 <style>
 /* ============================================================
    LUMEN — Single-File Documentation Engine
@@ -1573,6 +1572,180 @@ input[type="range"]::-moz-range-thumb {
   direction: ltr; cursor: pointer;
 }
 .swagger-curl:hover { color: var(--accent); }
+
+/* ============================================================
+   COMMAND PALETTE — close button + footer (v1.1)
+   ============================================================ */
+.cmd-close-btn { flex-shrink: 0; }
+.cmd-footer {
+  display: flex; gap: 16px; justify-content: flex-end;
+  padding: 8px 16px;
+  border-top: 1px solid var(--border);
+  font-size: 10px; color: var(--text-muted);
+  background: var(--bg-input);
+}
+.cmd-footer kbd { font-size: 9px; padding: 1px 5px; }
+
+/* ============================================================
+   DROPDOWN CLOSE BUTTON (search results)
+   ============================================================ */
+.search-results { position: fixed; }
+.dropdown-close {
+  position: absolute; top: 8px; inset-inline-end: 8px; z-index: 5;
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg-hover); border: 1px solid var(--border);
+  border-radius: 5px; color: var(--text-muted);
+  cursor: pointer; font-size: 11px;
+}
+.dropdown-close:hover { color: var(--accent); border-color: var(--accent); }
+
+/* ============================================================
+   VIEWER MODE (read-only) — hides every editing affordance
+   ============================================================ */
+body.view-mode .page-header-actions,
+body.view-mode #openEditor,
+body.view-mode #importBtn,
+body.view-mode .grid-card-actions,
+body.view-mode #gridNewPageBtn,
+body.view-mode .editor-only { display: none !important; }
+body.view-mode #toggleViewMode { color: var(--accent); border-color: var(--accent); background: var(--accent-dim); }
+
+/* ============================================================
+   INTERACTIVE SCREENSHOT WALKTHROUGH (:::tour)
+   ============================================================ */
+.tour {
+  margin: 1.5em 0;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.tour-loading { padding: 24px; text-align: center; color: var(--text-muted); font-size: 13px; }
+.tour-stage { position: relative; background: #000; }
+.tour-img { display: block; width: 100%; height: auto; }
+.tour-hotspot {
+  position: absolute; transform: translate(-50%, -50%);
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--accent); border: 2px solid rgba(255, 255, 255, 0.85);
+  cursor: pointer; padding: 0; z-index: 3;
+  animation: hotspotPulse 2s ease-out infinite;
+}
+.tour-hotspot::after {
+  content: ''; position: absolute; inset: -10px;
+  border-radius: 50%; border: 2px solid var(--accent);
+  opacity: 0; animation: hotspotRing 2s ease-out infinite;
+}
+.tour-hotspot:hover { transform: translate(-50%, -50%) scale(1.25); }
+@keyframes hotspotPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(212, 175, 127, 0.5); } 50% { box-shadow: 0 0 0 8px rgba(212, 175, 127, 0); } }
+@keyframes hotspotRing { 0% { transform: scale(0.6); opacity: 0.8; } 100% { transform: scale(1.4); opacity: 0; } }
+.tour-stage.pulse .tour-img { animation: tourPulse 0.35s var(--ease); }
+@keyframes tourPulse { 0% { opacity: 0.25; } 100% { opacity: 1; } }
+.tour-caption {
+  padding: 10px 16px; font-size: 13px; color: var(--text-body);
+  border-top: 1px solid var(--border);
+}
+.tour-controls {
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  padding: 10px 16px;
+  background: var(--bg-input);
+  border-top: 1px solid var(--border);
+}
+.tour-btn {
+  width: 30px; height: 30px;
+  background: var(--bg-elevated); border: 1px solid var(--border);
+  border-radius: 6px; color: var(--text);
+  cursor: pointer; font-size: 15px; line-height: 1;
+}
+.tour-btn:hover { border-color: var(--accent); color: var(--accent); }
+.tour-dots { display: flex; gap: 6px; }
+.tour-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--border-strong); cursor: pointer;
+  transition: all 0.18s var(--ease);
+}
+.tour-dot.active { background: var(--accent); transform: scale(1.25); box-shadow: 0 0 8px var(--accent-glow); }
+.tour-counter { font-size: 11px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; letter-spacing: 1px; }
+
+/* ============================================================
+   FLOWCHART (:::flow) — 4 shapes, auto-organized
+   ============================================================ */
+.flow-chart {
+  margin: 1.5em 0;
+  padding: 16px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow-x: auto;
+}
+.flow-chart svg { display: block; margin: 0 auto; }
+.flow-node {
+  fill: var(--bg-input);
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  transition: filter 0.2s var(--ease);
+}
+.flow-node:hover { filter: brightness(1.3); }
+.flow-label {
+  fill: var(--text);
+  font-size: 12px;
+  font-family: 'Inter', 'Vazirmatn', sans-serif;
+  pointer-events: none;
+}
+.flow-edge {
+  fill: none;
+  stroke: var(--text-muted);
+  stroke-width: 1.5;
+}
+.flow-edge-label-bg { fill: var(--bg); stroke: var(--border); stroke-width: 1; }
+.flow-edge-label {
+  fill: var(--text-muted);
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ============================================================
+   EMBED (:::embed) — sandboxed external page
+   ============================================================ */
+.embed-wrap {
+  margin: 1.5em 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--bg-input);
+}
+.embed-wrap iframe { width: 100%; height: 420px; border: none; display: block; }
+
+/* ============================================================
+   VERSION HISTORY
+   ============================================================ */
+.version-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  background: var(--bg-elevated);
+}
+.version-info { flex: 1; min-width: 0; }
+.version-label { font-size: 13px; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.version-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.version-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.version-empty {
+  padding: 28px 20px; text-align: center;
+  color: var(--text-muted); font-size: 13px; line-height: 1.7;
+  border: 1px dashed var(--border-strong); border-radius: 8px;
+}
+
+/* ============================================================
+   STATUSBAR — network indicator
+   ============================================================ */
+#statusNet { font-size: 10px; letter-spacing: 0.5px; }
+#statusNet.net-online { color: var(--text-muted); }
+#statusNet.net-offline { color: #fbbf24; }
+
+/* Editor AI button */
+.tb-btn#tbAI { color: var(--accent); }
 </style>
 </head>
 <body>
@@ -1620,6 +1793,9 @@ input[type="range"]::-moz-range-thumb {
       <span class="search-kbd">⌘K</span>
     </div>
     <div class="topbar-actions">
+      <button class="icon-btn" id="toggleViewMode" title="Toggle viewer mode (hide editing UI) [V]" aria-label="Viewer mode">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </button>
       <button class="icon-btn" id="openGrid" title="Outline [G]" aria-label="Outline">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
       </button>
@@ -1670,7 +1846,8 @@ input[type="range"]::-moz-range-thumb {
       <span style="font-size: 9px; letter-spacing: 1px;">PROGRESS</span>
       <div class="status-progress"><div class="status-progress-bar" id="statusProgressBar"></div></div>
     </div>
-    <span class="status-item right"><span id="statusLastVisited"></span></span>
+    <span class="status-item right"><span id="statusNet" class="net-online">Online</span></span>
+    <span class="status-item"><span id="statusLastVisited"></span></span>
     <span class="status-item"><span id="statusLang">EN · LTR</span></span>
   </footer>
 </div>
@@ -1684,8 +1861,10 @@ input[type="range"]::-moz-range-thumb {
     <div class="cmd-input-wrap">
       <span class="cmd-icon">▸</span>
       <input type="text" class="cmd-input" id="cmdInput" placeholder="Type a command or search…" autocomplete="off">
+      <button class="icon-btn cmd-close-btn" id="closeCmdBtn" aria-label="Close palette" title="Close (Esc)">✕</button>
     </div>
     <div class="cmd-results" id="cmdResults"></div>
+    <div class="cmd-footer"><span><kbd>↑</kbd><kbd>↓</kbd> navigate</span><span><kbd>↵</kbd> run</span><span><kbd>Esc</kbd> close</span></div>
   </div>
 </div>
 
@@ -1697,7 +1876,7 @@ input[type="range"]::-moz-range-thumb {
       <button class="icon-btn" id="closeSettings" aria-label="Close">✕</button>
     </div>
     <div class="modal-body">
-      <div class="setting-row">
+      <div class="setting-row editor-only">
         <div class="setting-label"><span>Document</span><span class="value" id="docVal">Lumen</span></div>
         <input type="text" class="setting-input" id="docName" placeholder="Document name" style="margin-bottom: 8px;">
         <input type="text" class="setting-input" id="docDesc" placeholder="Short description" style="margin-bottom: 8px;">
@@ -1708,17 +1887,31 @@ input[type="range"]::-moz-range-thumb {
         <input type="text" class="setting-input" id="docAuthor" placeholder="Author (optional)" style="margin-top: 8px;">
         <div class="setting-hint">Appears in the top bar, page title, exports, and loading screen. Updates live.</div>
       </div>
-      <div class="setting-row">
+      <div class="setting-row editor-only">
         <div class="setting-label"><span>Document actions</span></div>
         <div class="btn-row">
           <button class="btn" id="newDocBtn">New document from scratch</button>
+          <button class="btn" id="versionsHistoryBtn">⏱ Version history</button>
           <button class="btn" id="exportMenuBtn">Export…</button>
         </div>
-        <div class="setting-hint">“New document” clears all pages and starts fresh. Export your work first.</div>
+        <div class="setting-hint">“New document” clears all pages and starts fresh (a snapshot is taken first).</div>
       </div>
       <div class="setting-row">
         <div class="setting-label"><span>Theme</span><span class="value" id="themeVal">midnight</span></div>
         <div class="theme-grid" id="themeGrid"></div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-label"><span>Accent color</span><span class="value" id="accentVal">theme default</span></div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <input type="color" id="accentColor" value="#d4af7f" style="width: 48px; height: 32px; padding: 0; border: 1px solid var(--border); border-radius: 6px; background: var(--bg-input); cursor: pointer;">
+          <button class="btn" id="accentReset">Reset to theme</button>
+        </div>
+        <div class="setting-hint">Recolors links, headings, buttons, and highlights everywhere — including exports.</div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-label"><span>Custom CSS</span></div>
+        <textarea class="setting-input" id="customCss" rows="4" placeholder="/* e.g. */&#10;.page-title { letter-spacing: -0.03em; }&#10;.markdown h2 { color: #7ec8ff; }" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; resize: vertical; width: 100%;"></textarea>
+        <div class="setting-hint">Applied live on top of everything and included in exports. Use any CSS.</div>
       </div>
       <div class="setting-row">
         <div class="setting-label"><span>Font size</span><span class="value" id="fontVal">16px</span></div>
@@ -1740,15 +1933,79 @@ input[type="range"]::-moz-range-thumb {
           <button class="btn" data-density="compact">Compact</button>
         </div>
       </div>
-      <div class="setting-row">
+      <div class="setting-row editor-only">
+        <div class="setting-label"><span>Update &amp; Sync (GitHub)</span></div>
+        <input type="text" class="setting-input" id="syncRepo" placeholder="owner/repository" style="margin-bottom: 8px;">
+        <div style="display: flex; gap: 8px;">
+          <input type="text" class="setting-input" id="syncBranch" placeholder="main" style="max-width: 110px;">
+          <input type="text" class="setting-input" id="syncPath" placeholder="lumen-data.json" style="flex: 1;">
+        </div>
+        <input type="password" class="setting-input" id="syncToken" placeholder="Token (optional — for private repos)" style="margin-top: 8px;">
+        <label style="display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 12px; color: var(--text-body); cursor: pointer;">
+          <input type="checkbox" id="syncAuto" style="accent-color: var(--accent);"> Check for updates automatically on open
+        </label>
+        <div class="btn-row" style="margin-top: 10px;">
+          <button class="btn btn-primary" id="syncCheckBtn">⬇ Check for updates</button>
+        </div>
+        <div class="setting-hint" id="syncStatus">Fetches a lumen-data.json (or exported .html / .md) from your repo and saves it locally. The token stays in this browser only — use a fine-grained, read-only token.</div>
+      </div>
+      <div class="setting-row editor-only">
+        <div class="setting-label"><span>AI assist (optional)</span></div>
+        <input type="text" class="setting-input" id="aiEndpoint" placeholder="https://api.openai.com/v1/chat/completions" style="margin-bottom: 8px;">
+        <div style="display: flex; gap: 8px;">
+          <input type="text" class="setting-input" id="aiModel" placeholder="gpt-4o-mini" style="flex: 1;">
+          <input type="password" class="setting-input" id="aiKey" placeholder="API key" style="flex: 1;">
+        </div>
+        <div class="setting-hint">Any OpenAI-compatible endpoint works (OpenAI, OpenRouter, Ollama, LM Studio…). Select text in the editor, then press ✨ to improve, fix, summarize, or translate. The key stays in this browser only.</div>
+      </div>
+      <div class="setting-row editor-only">
         <div class="setting-label"><span>Data management</span></div>
         <div class="btn-row">
           <button class="btn" id="exportJsonBtn">Export JSON</button>
           <button class="btn" id="importJsonBtn">Import JSON</button>
+          <button class="btn" id="versionsOpenBtn">⏱ History</button>
           <button class="btn" id="resetBtn">Reset to defaults</button>
         </div>
-        <div class="setting-hint">All data is stored locally in your browser (localStorage).</div>
+        <label style="display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 12px; color: var(--text-body); cursor: pointer;">
+          <input type="checkbox" id="compressToggle" checked style="accent-color: var(--accent);"> Compress large images on upload (recommended)
+        </label>
+        <div class="setting-hint" id="storageStats">…</div>
+        <div class="setting-hint">Pages &amp; settings live in localStorage; uploaded media lives in IndexedDB (much bigger). Snapshots keep the last 15 states.</div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- VERSION HISTORY MODAL -->
+<div class="modal-overlay" id="versionsModal">
+  <div class="modal" style="max-width: 560px;">
+    <div class="modal-header">
+      <span class="modal-title">⏱ Version history</span>
+      <button class="icon-btn" id="closeVersions" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="btn-row" style="margin-bottom: 14px;">
+        <button class="btn btn-primary" id="versionsSnapBtn">＋ Create snapshot</button>
+      </div>
+      <div id="versionsList" style="max-height: 50vh; overflow-y: auto;"></div>
+      <div class="setting-hint" style="margin-top: 12px;">Snapshots are created automatically before destructive actions (delete, import, reset, remote update) and can be restored at any time. They live in this browser only — export a JSON backup to move them.</div>
+    </div>
+  </div>
+</div>
+
+<!-- AI RESULT MODAL -->
+<div class="modal-overlay" id="aiModal">
+  <div class="modal" style="max-width: 620px;">
+    <div class="modal-header">
+      <span class="modal-title">✨ <span id="aiActionLabel">AI</span></span>
+      <button class="icon-btn" id="closeAiModal" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <textarea class="setting-input" id="aiResult" rows="12" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; resize: vertical; width: 100%;" placeholder="Thinking…"></textarea>
+      <div class="btn-row" style="margin-top: 12px;">
+        <button class="btn btn-primary" id="aiApply">Apply to selection</button>
+      </div>
+      <div class="setting-hint">Review the result, then apply it to the selected text in the editor. Ctrl+S saves the page.</div>
     </div>
   </div>
 </div>
@@ -1799,14 +2056,21 @@ input[type="range"]::-moz-range-thumb {
       <button class="tb-btn" data-fmt="badge" title="Badge">🏷</button>
       <button class="tb-btn" data-fmt="slider" title="Image slider">▣</button>
       <button class="tb-btn" data-fmt="mermaid" title="Mermaid diagram">◊</button>
+      <button class="tb-btn" data-fmt="flow" title="Flowchart (4 shapes, 4 directions, auto-organize)">⬡</button>
+      <button class="tb-btn" data-fmt="tour" title="Clickable screenshot walkthrough">📷</button>
+      <button class="tb-btn" data-fmt="embed" title="Embed external page (https)">🌐</button>
     </div>
     <div class="toolbar-spacer"></div>
+    <button class="tb-btn" id="tbAI" title="AI assist — improve, fix, summarize, translate (select text first)">✨</button>
     <button class="tb-btn" id="tbUpload" title="Upload file (image/audio/video/pdf/csv/tex)">📎</button>
     <button class="tb-btn" id="tbHideToolbar" title="Hide toolbar">▾</button>
   </div>
 
   <!-- Page link dropdown -->
   <div class="page-link-dropdown" id="pageLinkDropdown"></div>
+
+  <!-- AI actions dropdown -->
+  <div class="page-link-dropdown" id="aiMenu"></div>
 
   <!-- Drag-drop hint -->
   <div class="editor-drophint" id="editorDropHint">Drop files to embed</div>
@@ -1915,6 +2179,7 @@ Write **markdown** here…"></textarea>
 <!-- IMAGE ZOOM -->
 <div class="zoom-overlay" id="zoomOverlay">
   <img id="zoomImg" alt="">
+  <button class="grid-close" id="zoomClose" aria-label="Close" title="Close (Esc)">✕</button>
 </div>
 
 <!-- TOAST CONTAINER -->
@@ -1928,14 +2193,182 @@ Write **markdown** here…"></textarea>
 <!-- Hidden file input for import -->
 <input type="file" id="fileInput" multiple accept=".md,.markdown,.txt" style="display: none;">
 <input type="file" id="jsonInput" accept=".json" style="display: none;">
+<script>
+/* ============================================================
+   LUMEN — LIBRARY LOADER (offline-capable)
+   Loads CDN libraries with an IndexedDB cache fallback so the
+   documentation keeps working with no network after first visit.
+   Strategy per library:
+     1. Inject <script src> (no CORS needed, uses HTTP cache).
+     2. On success: best-effort fetch() of the source to cache it
+        in IndexedDB for future offline use.
+     3. On failure: read the cached source from IndexedDB and
+        inject it inline. If no cache either, degrade gracefully.
+   ============================================================ */
 
-<!-- CDN Libraries -->
-<script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+window.LumenLibs = (() => {
+  const IDB_NAME = 'lumen-cache';
+  const STORE = 'libs';
+
+  // ---- tiny IndexedDB helper (promise-based) ----
+  function openDB() {
+    return new Promise((resolve, reject) => {
+      if (!window.indexedDB) { reject(new Error('no idb')); return; }
+      const req = indexedDB.open(IDB_NAME, 1);
+      req.onupgradeneeded = () => { req.result.createObjectStore(STORE); };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  }
+  async function cacheGet(key) {
+    try {
+      const db = await openDB();
+      return await new Promise((resolve, reject) => {
+        const r = db.transaction(STORE, 'readonly').objectStore(STORE).get(key);
+        r.onsuccess = () => resolve(r.result || null);
+        r.onerror = () => reject(r.error);
+      });
+    } catch (e) { return null; }
+  }
+  async function cacheSet(key, value) {
+    try {
+      const db = await openDB();
+      await new Promise((resolve, reject) => {
+        const r = db.transaction(STORE, 'readwrite').objectStore(STORE).put(value, key);
+        r.onsuccess = () => resolve();
+        r.onerror = () => reject(r.error);
+      });
+    } catch (e) { /* cache write is best-effort */ }
+  }
+
+  const status = {}; // key -> 'cdn' | 'cache' | 'failed'
+
+  // ---- loaders ----
+  function injectScriptSrc(url, timeoutMs) {
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = url;
+      s.setAttribute('data-lumen-lib', '1'); // marked so exports can strip it (the loader re-adds it)
+      const timer = setTimeout(() => { s.remove(); reject(new Error('timeout')); }, timeoutMs || 10000);
+      s.onload = () => { clearTimeout(timer); resolve(); };
+      s.onerror = () => { clearTimeout(timer); s.remove(); reject(new Error('load failed')); };
+      document.head.appendChild(s);
+    });
+  }
+  function injectScriptText(text) {
+    return new Promise((resolve) => {
+      const s = document.createElement('script');
+      s.setAttribute('data-lumen-lib', '1');
+      s.textContent = text;
+      document.head.appendChild(s);
+      resolve();
+    });
+  }
+  function injectCssText(text) {
+    const style = document.createElement('style');
+    style.setAttribute('data-lumen-lib-css', '1');
+    style.textContent = text;
+    document.head.appendChild(style);
+  }
+  function injectCssHref(url) {
+    return new Promise((resolve, reject) => {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = url;
+      const timer = setTimeout(() => reject(new Error('timeout')), 8000);
+      link.onload = () => { clearTimeout(timer); resolve(); };
+      link.onerror = () => { clearTimeout(timer); link.remove(); reject(new Error('css failed')); };
+      document.head.appendChild(link);
+    });
+  }
+  async function fetchText(url) {
+    const r = await fetch(url);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.text();
+  }
+
+  async function loadScriptLib(lib) {
+    // 1) try live CDN
+    try {
+      await injectScriptSrc(lib.url, lib.timeout || 12000);
+      status[lib.key] = 'cdn';
+      // 2) cache for offline (best-effort; requires CORS which jsdelivr provides)
+      fetchText(lib.url).then(t => cacheSet(lib.key, t)).catch(() => {});
+      return true;
+    } catch (e) { /* fall through */ }
+    // 3) cached copy
+    const cached = await cacheGet(lib.key);
+    if (cached) {
+      await injectScriptText(cached);
+      status[lib.key] = 'cache';
+      return true;
+    }
+    status[lib.key] = 'failed';
+    return false;
+  }
+
+  async function loadCssLib(lib) {
+    try {
+      await injectCssHref(lib.url);
+      status[lib.key] = 'cdn';
+      fetchText(lib.url).then(t => cacheSet(lib.key, t)).catch(() => {});
+      return true;
+    } catch (e) { /* fall through */ }
+    const cached = await cacheGet(lib.key);
+    if (cached) {
+      injectCssText(cached);
+      status[lib.key] = 'cache';
+      return true;
+    }
+    status[lib.key] = 'failed';
+    return false;
+  }
+
+  const CRITICAL = [
+    { key: 'marked',    url: 'https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js' },
+    { key: 'dompurify', url: 'https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js' },
+    { key: 'hljs',      url: 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js' },
+    { key: 'jszip',     url: 'https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js' },
+    { key: 'mermaid',   url: 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js', timeout: 20000 },
+    { key: 'jsyaml',    url: 'https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js' },
+  ];
+  const CRITICAL_CSS = [
+    { key: 'hljs-css', url: 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css' },
+  ];
+
+  // Lazy libs (loaded on demand by the engine)
+  const LAZY = {
+    'katex-js':  { key: 'katex-js',  url: 'https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js' },
+    'katex-css': { key: 'katex-css', url: 'https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css', css: true },
+  };
+
+  async function boot() {
+    // Parallel loading; scripts injected in order per key (fetch in parallel,
+    // but injection must respect nothing — these libs are independent).
+    await Promise.all([
+      ...CRITICAL.map(loadScriptLib),
+      ...CRITICAL_CSS.map(loadCssLib),
+    ]);
+    const ok = status.marked !== 'failed';
+    return ok;
+  }
+
+  const ready = boot();
+
+  async function ensure(keys) {
+    for (const k of keys) {
+      const lib = LAZY[k];
+      if (!lib) continue;
+      if (lib.done) continue;
+      if (lib.css) await loadCssLib(lib);
+      else await loadScriptLib(lib);
+      lib.done = true;
+    }
+  }
+
+  return { ready, ensure, status };
+})();
+</script>
 
 <!-- ENGINE + DOCUMENTATION CONTENT -->
 <script id="lumen-engine">
@@ -1946,6 +2379,8 @@ Write **markdown** here…"></textarea>
 const Lumen = (() => {
   const STORAGE_KEY = 'lumen-docs-v1';
   const SETTINGS_KEY = 'lumen-settings';
+  const VERSIONS_KEY = 'lumen-versions';
+  const MAX_VERSIONS = 15;
 
   // -------- Default documentation content (substantial demo) --------
   // Read lazily from window.__LUMEN_DEFAULT_PAGES__ which is set by a script
@@ -1962,11 +2397,18 @@ const Lumen = (() => {
       font: 16,
       dir: 'ltr',
       density: 'comfortable',
+      // --- new settings (v1.1) ---
+      viewMode: false,          // read-only mode for viewers
+      accent: '',               // custom accent color ('' = theme default)
+      customCss: '',            // user CSS applied on top of everything
+      compressImages: true,     // downscale large images on upload
+      sync: { repo: '', branch: 'main', path: 'lumen-data.json', token: '', auto: false },
+      ai: { endpoint: '', model: '', key: '' },
     },
     doc: {
       name: 'Lumen',
       description: 'A single-file static documentation engine',
-      version: '1.0',
+      version: '1.1',
       author: '',
       icon: '✦',
     },
@@ -1976,6 +2418,9 @@ const Lumen = (() => {
     lastVisited: {},
     searchIndex: [],
   };
+
+  // -------- Version snapshots (document history) --------
+  let versions = [];
 
   // -------- DOM refs --------
   const $ = (sel) => document.querySelector(sel);
@@ -1987,7 +2432,7 @@ const Lumen = (() => {
   const toPersian = (n) => String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
   const wordCount = (text) => (text.match(/\S+/g) || []).length;
   const readingTime = (text) => Math.max(1, Math.ceil(wordCount(text) / 220));
-  const escapeHtml = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const escapeHtml = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 
   // Auto-detect text direction based on character content.
   // Returns 'rtl' if the text has more RTL characters (Persian/Arabic/Hebrew) than LTR, else 'ltr'.
@@ -2000,6 +2445,72 @@ const Lumen = (() => {
   }
 
   // -------- Persistence --------
+  // Pages/bookmarks/settings live in localStorage (small).
+  // Uploaded files (base64 media) live in IndexedDB (large, ~unlimited quota)
+  // and are mirrored into the in-memory `fileStore` map for fast rendering.
+  // This split fixes the old "uploads blow the 5MB localStorage limit" bug.
+
+  // ---- IndexedDB file store ----
+  const FileDB = {
+    _db: null,
+    open() {
+      if (this._db) return Promise.resolve(this._db);
+      return new Promise((resolve, reject) => {
+        if (!window.indexedDB) { reject(new Error('IndexedDB unavailable')); return; }
+        const req = indexedDB.open('lumen-files', 1);
+        req.onupgradeneeded = () => { req.result.createObjectStore('files'); };
+        req.onsuccess = () => { this._db = req.result; resolve(this._db); };
+        req.onerror = () => reject(req.error);
+      });
+    },
+    async put(id, rec) {
+      try {
+        const db = await this.open();
+        await new Promise((resolve, reject) => {
+          const r = db.transaction('files', 'readwrite').objectStore('files').put(rec, id);
+          r.onsuccess = () => resolve();
+          r.onerror = () => reject(r.error);
+        });
+      } catch (e) { console.warn('FileDB.put failed:', e); }
+    },
+    async del(id) {
+      try {
+        const db = await this.open();
+        await new Promise((resolve, reject) => {
+          const r = db.transaction('files', 'readwrite').objectStore('files').delete(id);
+          r.onsuccess = () => resolve();
+          r.onerror = () => reject(r.error);
+        });
+      } catch (e) { /* best-effort */ }
+    },
+    async clear() {
+      try {
+        const db = await this.open();
+        await new Promise((resolve, reject) => {
+          const r = db.transaction('files', 'readwrite').objectStore('files').clear();
+          r.onsuccess = () => resolve();
+          r.onerror = () => reject(r.error);
+        });
+      } catch (e) { /* best-effort */ }
+    },
+    async all() {
+      try {
+        const db = await this.open();
+        return await new Promise((resolve, reject) => {
+          const out = {};
+          const r = db.transaction('files', 'readonly').objectStore('files').openCursor();
+          r.onsuccess = () => {
+            const cur = r.result;
+            if (cur) { out[cur.key] = cur.value; cur.continue(); }
+            else resolve(out);
+          };
+          r.onerror = () => reject(r.error);
+        });
+      } catch (e) { return {}; }
+    },
+  };
+
+  let saveWarned = false;
   function save() {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({
@@ -2008,10 +2519,17 @@ const Lumen = (() => {
         annotations: state.annotations,
         lastVisited: state.lastVisited,
         doc: state.doc,
-        fileStore: fileStore,
+        // NOTE: fileStore intentionally NOT here anymore — it lives in IndexedDB.
       }));
       localStorage.setItem(SETTINGS_KEY, JSON.stringify(state.settings));
-    } catch (e) { console.warn('Save failed:', e); }
+      saveWarned = false;
+    } catch (e) {
+      console.warn('Save failed:', e);
+      if (!saveWarned) {
+        saveWarned = true;
+        toast('⚠ Could not save — browser storage is full. Export a backup and remove large pages.', '⚠');
+      }
+    }
   }
 
   function load() {
@@ -2021,7 +2539,10 @@ const Lumen = (() => {
       if (!data.pages || !data.pages.length) {
         if (window.__LUMEN_DOC_META__) Object.assign(state.doc, window.__LUMEN_DOC_META__);
         if (window.__LUMEN_DEFAULT_SETTINGS__) Object.assign(state.settings, window.__LUMEN_DEFAULT_SETTINGS__);
-        if (window.__LUMEN_FILE_STORE__) Object.assign(fileStore, window.__LUMEN_FILE_STORE__);
+        if (window.__LUMEN_FILE_STORE__) {
+          Object.assign(fileStore, window.__LUMEN_FILE_STORE__);
+          persistFileStore(); // move embedded files into IndexedDB
+        }
         state.pages = getDefaultDocs().slice();
       } else {
         state.pages = data.pages;
@@ -2030,16 +2551,127 @@ const Lumen = (() => {
       state.annotations = data.annotations || {};
       state.lastVisited = data.lastVisited || {};
       if (data.doc) Object.assign(state.doc, data.doc);
-      // Restore file store
-      if (data.fileStore) {
+      // MIGRATION: older versions kept base64 files inside localStorage —
+      // move them to IndexedDB once, then strip them from the localStorage copy.
+      if (data.fileStore && Object.keys(data.fileStore).length) {
         Object.assign(fileStore, data.fileStore);
+        persistFileStore().then(() => {
+          try {
+            const clean = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+            delete clean.fileStore;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(clean));
+          } catch (e) { /* best-effort */ }
+        });
       }
       const s = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}');
+      // Deep-merge the nested setting groups so partial stored settings don't wipe defaults
+      ['sync', 'ai'].forEach(k => {
+        if (s[k] && typeof s[k] === 'object') s[k] = { ...state.settings[k], ...s[k] };
+      });
       Object.assign(state.settings, s);
     } catch (e) {
       console.warn('Load failed, using defaults:', e);
       state.pages = getDefaultDocs().slice();
     }
+  }
+
+  // Write every in-memory file into IndexedDB (used on import / migration / embedded boot)
+  async function persistFileStore() {
+    const ids = Object.keys(fileStore);
+    for (const id of ids) await FileDB.put(id, fileStore[id]);
+  }
+
+  // Remove files that are no longer referenced by any page (garbage collection)
+  async function gcFiles() {
+    const used = new Set();
+    state.pages.forEach(p => {
+      const m = (p.content || '').match(/file:\/\/([a-z0-9]+)/g) || [];
+      m.forEach(ref => used.add(ref.slice(7)));
+    });
+    const ids = Object.keys(fileStore);
+    for (const id of ids) {
+      if (!used.has(id)) {
+        delete fileStore[id];
+        await FileDB.del(id);
+      }
+    }
+  }
+
+  // -------- Version snapshots (documents act like code) --------
+  function loadVersions() {
+    try { versions = JSON.parse(localStorage.getItem(VERSIONS_KEY) || '[]'); }
+    catch (e) { versions = []; }
+  }
+  function saveVersions() {
+    // Quota-safe: if it doesn't fit, drop the oldest snapshot and retry
+    while (true) {
+      try { localStorage.setItem(VERSIONS_KEY, JSON.stringify(versions)); return; }
+      catch (e) {
+        if (versions.length > 1) versions.pop();
+        else { try { localStorage.removeItem(VERSIONS_KEY); } catch (_) {} versions = []; return; }
+      }
+    }
+  }
+  function snapshot(label) {
+    loadVersions();
+    versions.unshift({
+      id: 'v' + Date.now().toString(36),
+      ts: Date.now(),
+      label: label || 'Manual snapshot',
+      pageCount: state.pages.length,
+      wordCount: state.pages.reduce((s, p) => s + wordCount(p.content || ''), 0),
+      data: {
+        pages: JSON.parse(JSON.stringify(state.pages)),
+        doc: { ...state.doc },
+        bookmarks: [...state.bookmarks],
+      },
+    });
+    if (versions.length > MAX_VERSIONS) versions.length = MAX_VERSIONS;
+    saveVersions();
+  }
+  function openVersions() {
+    loadVersions();
+    const list = $('#versionsList');
+    if (!list) return;
+    if (!versions.length) {
+      list.innerHTML = '<div class="version-empty">No snapshots yet. Snapshots are created automatically before destructive actions (delete, import, reset, apply remote update), or manually with the button above.</div>';
+    } else {
+      list.innerHTML = versions.map(v => `
+        <div class="version-item" data-id="${v.id}">
+          <div class="version-info">
+            <div class="version-label">${escapeHtml(v.label)}</div>
+            <div class="version-meta">${timeAgo(v.ts)} · ${v.pageCount} pages · ${v.wordCount.toLocaleString()} words</div>
+          </div>
+          <div class="version-actions">
+            <button class="btn" data-restore="${v.id}">Restore</button>
+            <button class="btn" data-delversion="${v.id}">✕</button>
+          </div>
+        </div>`).join('');
+      list.querySelectorAll('[data-restore]').forEach(b => b.addEventListener('click', () => restoreVersion(b.dataset.restore)));
+      list.querySelectorAll('[data-delversion]').forEach(b => b.addEventListener('click', () => {
+        versions = versions.filter(v => v.id !== b.dataset.delversion);
+        saveVersions();
+        openVersions();
+      }));
+    }
+    $('#versionsModal').classList.add('open');
+  }
+  function restoreVersion(id) {
+    const v = versions.find(x => x.id === id);
+    if (!v) return;
+    if (!confirm('Restore "' + v.label + '"?\n\nYour current state is snapshotted first, so nothing is lost.')) return;
+    snapshot('Auto — before restore');
+    state.pages = JSON.parse(JSON.stringify(v.data.pages));
+    if (v.data.doc) state.doc = { ...v.data.doc };
+    state.bookmarks = (v.data.bookmarks || []).slice();
+    applyDocSettings();
+    buildSearchIndex();
+    save();
+    gcFiles();
+    renderSidebar();
+    go(state.pages[0] ? state.pages[0].id : null);
+    $('#versionsModal').classList.remove('open');
+    toast('Restored: ' + v.label, '⏱');
   }
 
   // -------- Document metadata --------
@@ -2079,9 +2711,9 @@ const Lumen = (() => {
   // -------- Markdown rendering with custom extensions --------
   function configureMarked() {
     const renderer = new marked.Renderer();
-    const originalHeading = renderer.heading.bind(renderer);
-    renderer.heading = (text, level, raw) => {
-      const id = slugify(raw);
+    renderer.heading = (text, level, raw, slugger) => {
+      // marked v4 passes a Slugger as 4th arg — it dedupes repeated headings
+      const id = slugger ? slugger.slug(raw) : slugify(raw);
       return `<h${level} id="${id}"><a class="anchor" href="#${id}" aria-hidden="true"></a>${text}</h${level}>`;
     };
     const originalLink = renderer.link.bind(renderer);
@@ -2100,9 +2732,9 @@ const Lumen = (() => {
       if (lang === 'mermaid') {
         return `<div class="mermaid">${code}</div>`;
       }
-      const language = lang && hljs.getLanguage(lang) ? lang : 'plaintext';
+      const language = lang && window.hljs && hljs.getLanguage(lang) ? lang : 'plaintext';
       try {
-        const highlighted = hljs.highlight(code, { language, ignoreIllegals: true }).value;
+        const highlighted = window.hljs ? hljs.highlight(code, { language, ignoreIllegals: true }).value : escapeHtml(code);
         const label = lang ? `<span class="code-lang">${lang}</span>` : '';
         return `<pre><code class="hljs language-${language}">${highlighted}</code>${label}<button class="copy-btn" data-code="${encodeURIComponent(code)}" title="Copy">⎘</button></pre>`;
       } catch (e) {
@@ -2138,8 +2770,30 @@ const Lumen = (() => {
     mathStore.length = 0;
     mathStoreIdx = 0;
 
+    // ---- STEP 1: protect code FIRST ----
+    // Fenced code blocks and inline code spans are extracted before any block
+    // transformation runs, so :::syntax shown inside code examples (like the
+    // "Syntax" sections of the docs) is displayed verbatim instead of being
+    // rendered as a real block.
+    const codeBlocks = [];
+    md = md.replace(/```[\s\S]*?```/g, (m) => {
+      const idx = codeBlocks.length;
+      codeBlocks.push(m);
+      return `\u0000CODEBLOCK${idx}\u0000`;
+    });
+    const codeSpans = [];
+    md = md.replace(/`[^`\n]+`/g, (m) => {
+      const idx = codeSpans.length;
+      codeSpans.push(m);
+      return `\u0000CODESPAN${idx}\u0000`;
+    });
+
+    // ---- STEP 2: block extensions ----
+    // All block openers are anchored to the start of a line (^... with /gm),
+    // so mentioning ":::flow" in a heading or mid-sentence never triggers a block.
+
     // Callouts: :::tip / :::info / :::warning / :::danger / :::quote
-    md = md.replace(/:::(tip|info|warning|danger|quote)\s*(?:\n(.*?))?:::/gs, (m, type, body) => {
+    md = md.replace(/^:::(tip|info|warning|danger|quote)[ \t]*\n([\s\S]*?)^:::[ \t]*$/gm, (m, type, body) => {
       const icons = { tip: '✓', info: 'i', warning: '!', danger: '✕', quote: '"' };
       const titles = { tip: 'Tip', info: 'Note', warning: 'Warning', danger: 'Important', quote: 'Quote' };
       const b = (body || '').trim();
@@ -2147,10 +2801,8 @@ const Lumen = (() => {
     });
 
     // Cards: :::card-grid\n:::card Title\n...body...\n:::\n:::
-    // Match the grid's closing ::: pair (:::\n::: not followed by 'card')
-    // and add back the last card's closing ::: to inner content
-    md = md.replace(/:::card-grid\s*\n([\s\S]*?):::\n:::(?!card)/g, (m, inner) => {
-      const fullInner = inner + ':::';
+    md = md.replace(/^:::card-grid[ \t]*\n([\s\S]*?)\n:::[ \t]*\n:::(?![ \t]*card)/gm, (m, inner) => {
+      const fullInner = inner + '\n:::';
       const cards = fullInner.match(/:::card\s+([^\n]+)\s*\n([\s\S]*?):::/g) || [];
       const cardsHtml = cards.map(c => {
         const match = c.match(/:::card\s+([^\n]+)\s*\n([\s\S]*?):::/);
@@ -2162,25 +2814,76 @@ const Lumen = (() => {
       return `<div class="card-grid">${cardsHtml}</div>`;
     });
 
-    // Math: protect $$...$$ (display) and $...$ (inline) from marked by replacing with placeholders.
-    // KaTeX will render them after marked finishes.
-    // IMPORTANT: Skip math inside code spans (between backticks) and fenced code blocks.
-    // We split the markdown by code blocks/spans, and only apply math outside them.
+    // Swagger / OpenAPI: :::swagger\n{json or url}\n:::
+    md = md.replace(/^:::swagger[ \t]*\n([\s\S]*?)^:::[ \t]*$/gm, (m, body) => {
+      const trimmed = (body || '').trim();
+      if (!trimmed) return '<div class="swagger-error">Empty swagger block</div>';
+      if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+        return `<div class="swagger-container" data-spec-url="${escapeHtml(trimmed)}"><div class="swagger-loading">Loading API spec…</div></div>`;
+      }
+      return `<div class="swagger-container" data-spec="${encodeURIComponent(trimmed)}"><div class="swagger-loading">Loading API spec…</div></div>`;
+    });
 
-    // Extract fenced code blocks first (```...```)
-    const codeBlocks = [];
-    md = md.replace(/```[\s\S]*?```/g, (m) => {
-      const idx = codeBlocks.length;
-      codeBlocks.push(m);
-      return `\u0000CODEBLOCK${idx}\u0000`;
+    // Image slider: :::slider\n![alt](url)\n:::
+    md = md.replace(/^:::slider[ \t]*\n([\s\S]*?)^:::[ \t]*$/gm, (m, body) => {
+      const lines = (body || '').trim().split('\n').filter(l => l.trim());
+      const slides = lines.map(line => {
+        const imgMatch = line.match(/^!\[([^\]]*)\]\(([^)]+)\)/);
+        if (imgMatch) {
+          const alt = imgMatch[1] || '';
+          const url = imgMatch[2];
+          return `<div class="slider-slide"><img src="${escapeHtml(url)}" alt="${escapeHtml(alt)}">${alt ? '<figcaption>' + escapeHtml(alt) + '</figcaption>' : ''}</div>`;
+        }
+        return '';
+      }).join('');
+      if (!slides) return '<div class="swagger-error">Empty slider — add images with ![alt](url)</div>';
+      return `<div class="slider" data-slider="1"><div class="slider-track">${slides}</div><button class="slider-btn prev" onclick="Lumen.sliderGo(this,-1)">‹</button><button class="slider-btn next" onclick="Lumen.sliderGo(this,1)">›</button><div class="slider-dots"></div></div>`;
     });
-    // Extract inline code spans (`...`)
-    const codeSpans = [];
-    md = md.replace(/`[^`\n]+`/g, (m) => {
-      const idx = codeSpans.length;
-      codeSpans.push(m);
-      return `\u0000CODESPAN${idx}\u0000`;
+
+    // Interactive screenshot walkthrough: :::tour
+    // Each line: ![alt](url) followed by optional hotspots:  x%,y% -> stepNumber
+    // Clicking a hotspot jumps to that step. Shows an app "in work" using only images.
+    md = md.replace(/^:::tour[ \t]*\n([\s\S]*?)^:::[ \t]*$/gm, (m, body) => {
+      const lines = (body || '').trim().split('\n').filter(l => l.trim());
+      const steps = [];
+      lines.forEach(line => {
+        const imgMatch = line.match(/^!\[([^\]]*)\]\(([^)]+)\)(.*)$/);
+        if (!imgMatch) return;
+        const hotspots = [];
+        const rest = imgMatch[3] || '';
+        let hm;
+        const hre = /(\d+(?:\.\d+)?)\s*%?,\s*(\d+(?:\.\d+)?)\s*%?\s*->\s*(\d+)/g;
+        while ((hm = hre.exec(rest)) !== null) {
+          hotspots.push({ x: parseFloat(hm[1]), y: parseFloat(hm[2]), to: parseInt(hm[3]) });
+        }
+        steps.push({ alt: imgMatch[1] || '', url: imgMatch[2], hotspots });
+      });
+      if (!steps.length) return '<div class="swagger-error">Empty tour — add steps with ![alt](url) and optional hotspots: 40%,62 -> 2</div>';
+      return `<div class="tour" data-tour="${encodeURIComponent(JSON.stringify(steps))}"><div class="tour-loading">Loading walkthrough…</div></div>`;
     });
+
+    // Flowchart: :::flow — 4 shapes, 4 directions, auto-organize
+    //   A[Square]  B(Circle)  C{Diamond}  D<Hexagon>
+    //   A > B   (B to the right of A)     A < B   (B to the left)
+    //   A ^ B   (B above A)               A v B   (B below A)
+    //   Optional edge label:  A > B | yes
+    md = md.replace(/^:::flow[ \t]*\n([\s\S]*?)^:::[ \t]*$/gm, (m, body) => {
+      return `<div class="flow-chart" data-flow="${encodeURIComponent(body || '')}"><div class="tour-loading">Drawing flowchart…</div></div>`;
+    });
+
+    // External embed: :::embed\nhttps://...\n:::  (sandboxed iframe)
+    md = md.replace(/^:::embed[ \t]*\n([\s\S]*?)^:::[ \t]*$/gm, (m, body) => {
+      const url = (body || '').trim().split(/\s+/)[0];
+      if (!/^https:\/\//i.test(url)) {
+        return '<div class="swagger-error">Embed requires an https:// URL (e.g. a YouTube share link)</div>';
+      }
+      return `<div class="embed-wrap"><iframe src="${escapeHtml(url)}" loading="lazy" sandbox="allow-scripts allow-same-origin allow-popups allow-forms" referrerpolicy="no-referrer" allowfullscreen></iframe></div>`;
+    });
+
+    // ---- STEP 3: math ----
+    // Protect $$...$$ (display) and $...$ (inline) from marked by replacing with
+    // placeholders. KaTeX renders them after marked finishes. Code was already
+    // extracted in step 1, so math inside code never matches.
 
     // Display math first (greedy, multi-line)
     md = md.replace(/\$\$([\s\S]+?)\$\$/g, (m, eq) => {
@@ -2197,35 +2900,9 @@ const Lumen = (() => {
       return `@@MATH${idx}@@`;
     });
 
-    // Restore code spans and blocks (so marked can syntax-highlight them)
+    // ---- STEP 4: restore code so marked can highlight it ----
     md = md.replace(/\u0000CODESPAN(\d+)\u0000/g, (m, idx) => codeSpans[parseInt(idx)]);
     md = md.replace(/\u0000CODEBLOCK(\d+)\u0000/g, (m, idx) => codeBlocks[parseInt(idx)]);
-
-    // Swagger / OpenAPI: :::swagger\n{json or url}\n:::
-    md = md.replace(/:::swagger\s*\n([\s\S]*?):::/g, (m, body) => {
-      const trimmed = (body || '').trim();
-      if (!trimmed) return '<div class="swagger-error">Empty swagger block</div>';
-      if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
-        return `<div class="swagger-container" data-spec-url="${escapeHtml(trimmed)}"><div class="swagger-loading">Loading API spec…</div></div>`;
-      }
-      return `<div class="swagger-container" data-spec="${encodeURIComponent(trimmed)}"><div class="swagger-loading">Loading API spec…</div></div>`;
-    });
-
-    // Image slider: :::slider\n![alt](url)\n:::
-    md = md.replace(/:::slider\s*\n([\s\S]*?):::/g, (m, body) => {
-      const lines = (body || '').trim().split('\n').filter(l => l.trim());
-      const slides = lines.map(line => {
-        const imgMatch = line.match(/^!\[([^\]]*)\]\(([^)]+)\)/);
-        if (imgMatch) {
-          const alt = imgMatch[1] || '';
-          const url = imgMatch[2];
-          return `<div class="slider-slide"><img src="${escapeHtml(url)}" alt="${escapeHtml(alt)}">${alt ? '<figcaption>' + escapeHtml(alt) + '</figcaption>' : ''}</div>`;
-        }
-        return '';
-      }).join('');
-      if (!slides) return '<div class="swagger-error">Empty slider — add images with ![alt](url)</div>';
-      return `<div class="slider" data-slider="1"><div class="slider-track">${slides}</div><button class="slider-btn prev" onclick="Lumen.sliderGo(this,-1)">‹</button><button class="slider-btn next" onclick="Lumen.sliderGo(this,1)">›</button><div class="slider-dots"></div></div>`;
-    });
 
     return md;
   }
@@ -2272,14 +2949,14 @@ const Lumen = (() => {
     html = restoreMath(html);
     // Resolve file:// references to their stored data URLs (so the editor source stays short)
     html = resolveFileRefs(html);
-    return DOMPurify.sanitize(html, {
-      ADD_TAGS: ['div', 'span', 'audio', 'video', 'source', 'embed', 'figure', 'figcaption'],
-      ADD_ATTR: ['class', 'data-page', 'data-code', 'data-spec', 'data-spec-url', 'data-endpoint', 'data-method', 'data-path', 'data-scheme', 'data-math-idx', 'data-display', 'id', 'target', 'rel', 'aria-hidden', 'controls', 'src', 'type', 'width', 'height', 'style'],
-    });
+    return window.DOMPurify ? DOMPurify.sanitize(html, {
+      ADD_TAGS: ['div', 'span', 'audio', 'video', 'source', 'embed', 'figure', 'figcaption', 'iframe', 'details', 'summary'],
+      ADD_ATTR: ['class', 'data-page', 'data-code', 'data-spec', 'data-spec-url', 'data-endpoint', 'data-method', 'data-path', 'data-scheme', 'data-math-idx', 'data-display', 'data-tour', 'data-flow', 'data-slider', 'id', 'target', 'rel', 'aria-hidden', 'controls', 'src', 'type', 'width', 'height', 'style', 'sandbox', 'loading', 'allowfullscreen', 'referrerpolicy', 'open'],
+    }) : html;
   }
 
   // -------- File store --------
-  // Dropped files are stored here (in memory + persisted to localStorage).
+  // Dropped files are stored here (in memory, persisted to IndexedDB).
   // The editor source references them as file://ID — short and clean.
   // At render time, resolveFileRefs() swaps them back to data URLs.
   const fileStore = {};  // { id: { name, type, dataUrl } }
@@ -2293,9 +2970,17 @@ const Lumen = (() => {
     });
   }
 
+  // Resolve a single file://ID url to its data URL (used by tour images etc.)
+  function resolveFileUrl(url) {
+    const m = String(url || '').match(/^file:\/\/([a-z0-9]+)$/);
+    if (m && fileStore[m[1]]) return fileStore[m[1]].dataUrl;
+    return url;
+  }
+
   function saveFileToStore(name, type, dataUrl) {
     const id = 'f' + Math.random().toString(36).slice(2, 10);
     fileStore[id] = { name, type, dataUrl };
+    FileDB.put(id, fileStore[id]); // async, fire-and-forget
     return id;
   }
 
@@ -2458,6 +3143,10 @@ const Lumen = (() => {
 
     // Sliders — build dots and set initial position
     $$('#page .slider').forEach(slider => initializeSlider(slider));
+
+    // Interactive walkthroughs + flowcharts
+    initializeTours($('#page'));
+    initializeFlows($('#page'));
 
     // Copy buttons
     $$('#page .copy-btn').forEach(btn => {
@@ -2911,6 +3600,269 @@ const Lumen = (() => {
     dots.forEach((d, i) => d.classList.toggle('active', i === idx));
   }
 
+  // -------- Interactive screenshot walkthrough (:::tour) --------
+  // Shows an app "in work" using only images: each step is a screenshot,
+  // hotspots (x%,y% -> step) are clickable circles that jump between steps.
+  function initializeTours(rootEl) {
+    rootEl.querySelectorAll('.tour').forEach(tour => {
+      if (tour.dataset.ready) return;
+      tour.dataset.ready = '1';
+      let steps;
+      try { steps = JSON.parse(decodeURIComponent(tour.dataset.tour)); }
+      catch (e) { tour.innerHTML = '<div class="swagger-error">Invalid tour data</div>'; return; }
+      if (!steps.length) return;
+
+      const stage = document.createElement('div');
+      stage.className = 'tour-stage';
+      const img = document.createElement('img');
+      img.className = 'tour-img';
+      img.alt = steps[0].alt || '';
+      img.src = resolveFileUrl(steps[0].url);
+      stage.appendChild(img);
+
+      const caption = document.createElement('div');
+      caption.className = 'tour-caption';
+
+      const controls = document.createElement('div');
+      controls.className = 'tour-controls';
+      controls.innerHTML =
+        '<button class="tour-btn prev" title="Previous step">‹</button>' +
+        '<div class="tour-dots">' + steps.map((_, i) => `<span class="tour-dot${i === 0 ? ' active' : ''}" data-i="${i}"></span>`).join('') + '</div>' +
+        '<span class="tour-counter">1 / ' + steps.length + '</span>' +
+        '<button class="tour-btn next" title="Next step">›</button>';
+      tour.innerHTML = '';
+      tour.appendChild(stage);
+      tour.appendChild(caption);
+      tour.appendChild(controls);
+
+      let current = 0;
+      function renderHotspots() {
+        stage.querySelectorAll('.tour-hotspot').forEach(h => h.remove());
+        (steps[current].hotspots || []).forEach(h => {
+          if (h.to < 1 || h.to > steps.length) return;
+          const btn = document.createElement('button');
+          btn.className = 'tour-hotspot';
+          btn.style.left = h.x + '%';
+          btn.style.top = h.y + '%';
+          btn.title = 'Go to step ' + h.to;
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            show(h.to - 1, true);
+          });
+          stage.appendChild(btn);
+        });
+      }
+      function show(i, viaHotspot) {
+        current = Math.max(0, Math.min(steps.length - 1, i));
+        const s = steps[current];
+        img.src = resolveFileUrl(s.url);
+        img.alt = s.alt || '';
+        caption.textContent = (current + 1) + '. ' + (s.alt || '');
+        caption.style.display = s.alt ? '' : 'none';
+        controls.querySelector('.tour-counter').textContent = (current + 1) + ' / ' + steps.length;
+        controls.querySelectorAll('.tour-dot').forEach((d, di) => d.classList.toggle('active', di === current));
+        renderHotspots();
+        if (viaHotspot) {
+          stage.classList.remove('pulse');
+          void stage.offsetWidth; // restart animation
+          stage.classList.add('pulse');
+        }
+      }
+      controls.querySelector('.prev').addEventListener('click', () => show(current - 1));
+      controls.querySelector('.next').addEventListener('click', () => show(current + 1));
+      controls.querySelectorAll('.tour-dot').forEach(d => d.addEventListener('click', () => show(parseInt(d.dataset.i))));
+      show(0);
+    });
+  }
+
+  // -------- Flowchart engine (:::flow) --------
+  // 4 shapes (square / circle / diamond / hexagon), 4 directions (> < ^ v),
+  // auto-organize via direction-constrained grid relaxation, rendered as SVG.
+  function parseFlow(src) {
+    const nodes = new Map(); // id -> { id, label, shape }
+    const edges = [];        // { from, to, dir, label }
+    (src || '').split('\n').forEach(line => {
+      const l = line.trim();
+      if (!l || l.startsWith('#') || l.startsWith('//')) return;
+      // Node: ID[Label] | ID(Label) | ID{Label} | ID<Label>
+      const nm = l.match(/^([A-Za-z0-9_-]+)\s*([\[\(\{<])([^)\]\}>]*)[\]\)\}>]$/);
+      if (nm) {
+        const label = nm[3].trim() || nm[1];
+        nodes.set(nm[1], { id: nm[1], label, shape: nm[2] });
+        return;
+      }
+      // Edge: A > B | label   (also ->, <, ^, v)
+      const em = l.match(/^([A-Za-z0-9_-]+)\s*(->|>|<|\^|v|V)\s*([A-Za-z0-9_-]+)(?:\s*\|\s*(.+))?$/);
+      if (em) {
+        let dir = em[2] === '->' ? '>' : (em[2] === 'V' ? 'v' : em[2]);
+        // "A -> B" and "A > B" both mean B sits to the RIGHT of A
+        edges.push({ from: em[1], to: em[3], dir, label: (em[4] || '').trim() });
+        if (!nodes.has(em[1])) nodes.set(em[1], { id: em[1], label: em[1], shape: '[' });
+        if (!nodes.has(em[3])) nodes.set(em[3], { id: em[3], label: em[3], shape: '[' });
+        return;
+      }
+    });
+    return { nodes, edges };
+  }
+
+  function layoutFlow(nodes, edges) {
+    const DELTA = { '>': [1, 0], '<': [-1, 0], '^': [0, -1], 'v': [0, 1] };
+    const ids = [...nodes.keys()];
+    const pos = new Map();
+    if (!ids.length) return pos;
+
+    // roots = nodes with no incoming edges
+    const inc = new Map(ids.map(i => [i, 0]));
+    edges.forEach(e => inc.set(e.to, (inc.get(e.to) || 0) + 1));
+    const roots = ids.filter(i => !inc.get(i));
+    if (!roots.length) roots.push(ids[0]);
+
+    // BFS processing order
+    const order = [];
+    const seen = new Set();
+    const q = [...roots];
+    while (q.length) {
+      const n = q.shift();
+      if (seen.has(n)) continue;
+      seen.add(n);
+      order.push(n);
+      edges.filter(e => e.from === n).forEach(e => q.push(e.to));
+    }
+    ids.forEach(i => { if (!seen.has(i)) order.push(i); });
+
+    // Initial placement: roots stacked vertically at column 0
+    roots.forEach((r, i) => pos.set(r, { x: 0, y: i * 2 }));
+
+    // Pass 1 — place unplaced nodes at the desired spot of their first incoming edge
+    for (const e of edges) {
+      if (!pos.has(e.from)) pos.set(e.from, { x: 0, y: pos.size * 2 });
+      if (!pos.has(e.to)) {
+        const d = DELTA[e.dir] || DELTA['>'];
+        const p = pos.get(e.from);
+        let x = p.x + d[0], y = p.y + d[1];
+        // collision shove: move down until the cell is free
+        while ([...pos.values()].some(c => c.x === x && c.y === y)) y += 1;
+        pos.set(e.to, { x, y });
+      }
+    }
+    ids.forEach(i => { if (!pos.has(i)) pos.set(i, { x: 0, y: pos.size * 2 }); });
+
+    // Pass 2 — relaxation: pull nodes toward their direction targets, then
+    // snap to a grid and resolve collisions. Repeated a few times so the
+    // layout settles into a tidy arrangement that honors all 4 directions.
+    const occupied = (p, skipId) => {
+      for (const [id, c] of pos) { if (id !== skipId && c.x === p.x && c.y === p.y) return true; }
+      return false;
+    };
+    for (let it = 0; it < 8; it++) {
+      for (const e of edges) {
+        if (roots.includes(e.to)) continue; // anchors stay put
+        const a = pos.get(e.from), b = pos.get(e.to);
+        const d = DELTA[e.dir] || DELTA['>'];
+        const tx = a.x + d[0], ty = a.y + d[1];
+        b.x += (tx - b.x) * 0.45;
+        b.y += (ty - b.y) * 0.45;
+      }
+      // snap + de-collide in a stable order
+      order.forEach(id => {
+        const p = pos.get(id);
+        p.x = Math.round(p.x); p.y = Math.round(p.y);
+        while (occupied(p, id)) p.y += 1;
+      });
+    }
+
+    // Normalize to 0-based
+    const minX = Math.min(...[...pos.values()].map(p => p.x));
+    const minY = Math.min(...[...pos.values()].map(p => p.y));
+    pos.forEach(p => { p.x -= minX; p.y -= minY; });
+    return pos;
+  }
+
+  function initializeFlows(rootEl) {
+    rootEl.querySelectorAll('.flow-chart').forEach(el => {
+      if (el.dataset.ready) return;
+      el.dataset.ready = '1';
+      let parsed;
+      try { parsed = parseFlow(decodeURIComponent(el.dataset.flow)); }
+      catch (e) { el.innerHTML = '<div class="swagger-error">Invalid flow data</div>'; return; }
+      const { nodes, edges } = parsed;
+      if (!nodes.size) { el.innerHTML = '<div class="swagger-error">Empty flowchart</div>'; return; }
+
+      const pos = layoutFlow(nodes, edges);
+
+      // --- geometry ---
+      const pad = 16;
+      const nodeW = (label) => Math.max(96, Math.min(240, label.length * 8.2 + 36));
+      const H_SQUARE = 46, H_HEX = 46, H_CIRCLE = 52, H_DIAMOND = 74;
+      const heightFor = (shape) => shape === '{' ? H_DIAMOND : shape === '(' ? H_CIRCLE : H_SQUARE;
+      const colW = Math.max(...[...nodes.values()].map(n => nodeW(n.label))) + 64;
+      const rowH = 84;
+      const W = (id) => nodeW(nodes.get(id).label);
+      const cx = (id) => pos.get(id).x * colW + colW / 2;
+      const cy = (id) => pos.get(id).y * rowH + heightFor(nodes.get(id).shape) / 2;
+      const maxX = Math.max(...[...pos.values()].map(p => p.x));
+      const maxY = Math.max(...[...pos.values()].map(p => p.y));
+      const svgW = (maxX + 1) * colW + pad * 2;
+      const svgH = (maxY + 1) * rowH + Math.max(...[...nodes.values()].map(n => heightFor(n.shape))) + pad;
+
+      let svg = `<svg viewBox="0 0 ${svgW} ${svgH}" width="${svgW}" height="${svgH}" role="img" style="max-width:100%;height:auto;">`;
+      svg += `<defs><marker id="lfa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/></marker></defs>`;
+
+      // edges first (under nodes)
+      edges.forEach(e => {
+        const a = { x: cx(e.from), y: cy(e.from) };
+        const b = { x: cx(e.to), y: cy(e.to) };
+        const dx = b.x - a.x, dy = b.y - a.y;
+        // pick anchor sides based on dominant direction
+        let x1 = a.x, y1 = a.y, x2 = b.x, y2 = b.y;
+        if (Math.abs(dx) >= Math.abs(dy)) { x1 = a.x + Math.sign(dx) * W(e.from) / 2; x2 = b.x - Math.sign(dx) * W(e.to) / 2; }
+        else { y1 = a.y + Math.sign(dy) * heightFor(nodes.get(e.from).shape) / 2; y2 = b.y - Math.sign(dy) * heightFor(nodes.get(e.to).shape) / 2; }
+        const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+        const c1x = x1 + (mx - x1) * 0.5, c1y = y1, c2x = mx + (x2 - mx) * 0.5, c2y = y2;
+        svg += `<path class="flow-edge" d="M${x1},${y1} C${c1x},${c1y} ${c2x},${c2y} ${x2},${y2}" marker-end="url(#lfa)"/>`;
+        if (e.label) {
+          svg += `<rect class="flow-edge-label-bg" x="${mx - e.label.length * 3.4 - 4}" y="${my - 9}" width="${e.label.length * 6.8 + 8}" height="18" rx="4"/>`;
+          svg += `<text class="flow-edge-label" x="${mx}" y="${my + 4}" text-anchor="middle">${escapeHtml(e.label)}</text>`;
+        }
+      });
+
+      // nodes
+      nodes.forEach(n => {
+        const p = pos.get(n.id);
+        const w = W(n.id), h = heightFor(n.shape);
+        const x = p.x * colW + (colW - w) / 2 + pad;
+        const y = p.y * rowH + (h === H_DIAMOND ? 12 : 6);
+        const cxx = x + w / 2, cyy = y + h / 2;
+        if (n.shape === '(') {
+          svg += `<ellipse class="flow-node" cx="${cxx}" cy="${cyy}" rx="${w / 2}" ry="${h / 2}"/>`;
+        } else if (n.shape === '{') {
+          svg += `<polygon class="flow-node" points="${cxx},${y} ${x + w},${cyy} ${cxx},${y + h} ${x},${cyy}"/>`;
+        } else if (n.shape === '<') {
+          const cut = 14;
+          svg += `<polygon class="flow-node" points="${x + cut},${y} ${x + w - cut},${y} ${x + w},${cyy} ${x + w - cut},${y + h} ${x + cut},${y + h} ${x},${cyy}"/>`;
+        } else {
+          svg += `<rect class="flow-node" x="${x}" y="${y}" width="${w}" height="${h}" rx="8"/>`;
+        }
+        // wrap long labels into two lines
+        const words = n.label.split(/\s+/);
+        let lines = [], cur = '';
+        words.forEach(wd => {
+          if ((cur + ' ' + wd).trim().length > Math.floor(w / 8.2) && cur) { lines.push(cur); cur = wd; }
+          else cur = (cur + ' ' + wd).trim();
+        });
+        if (cur) lines.push(cur);
+        if (lines.length > 2) { lines = [lines[0], lines[1] + '…']; }
+        lines.forEach((ln, li) => {
+          svg += `<text class="flow-label" x="${cxx}" y="${cyy - (lines.length - 1) * 8 + li * 16 + 5}" text-anchor="middle">${escapeHtml(ln)}</text>`;
+        });
+      });
+
+      svg += '</svg>';
+      el.innerHTML = svg;
+    });
+  }
+
+  let tocScrollBound = false;
   function renderTOC() {
     const headings = $$('#page .markdown h2, #page .markdown h3, #page .markdown h4');
     const list = $('#tocList');
@@ -2922,9 +3874,12 @@ const Lumen = (() => {
       return `<li><a class="toc-link level-${level.replace('h','')}" data-anchor="${id}" onclick="Lumen.scrollToAnchor('${id}')">${escapeHtml(text)}</a></li>`;
     }).join('');
 
-    // Active heading on scroll
-    const content = $('#content');
-    content.addEventListener('scroll', debounce(updateActiveTOC, 80), { passive: true });
+    // Active heading on scroll — bind ONCE (rebinding on every render leaked listeners)
+    if (!tocScrollBound) {
+      const content = $('#content');
+      content.addEventListener('scroll', debounce(updateActiveTOC, 80), { passive: true });
+      tocScrollBound = true;
+    }
   }
 
   function updateActiveTOC() {
@@ -3032,6 +3987,14 @@ const Lumen = (() => {
     $('#themeVal').textContent = theme;
     save();
     renderThemeGrid();
+    // Keep Mermaid diagrams in sync with light/dark themes
+    if (window.mermaid) {
+      const light = theme === 'daylight' || theme === 'sepia';
+      try {
+        window.mermaid.initialize({ startOnLoad: false, securityLevel: 'loose', theme: light ? 'default' : 'dark' });
+        if (state.currentPageId && $('#page .mermaid')) renderPage(state.currentPageId);
+      } catch (e) { /* non-fatal */ }
+    }
   }
   function cycleTheme() {
     const i = THEMES.indexOf(state.settings.theme);
@@ -3061,16 +4024,80 @@ const Lumen = (() => {
     document.body.setAttribute('data-theme', state.settings.theme);
     document.documentElement.setAttribute('dir', state.settings.dir);
     document.documentElement.style.setProperty('--base-font-size', state.settings.font + 'px');
-    if (state.settings.density === 'compact') {
-      document.documentElement.style.setProperty('--density-pad', '0.7em');
-      document.documentElement.style.setProperty('--density-gap', '0.7em');
-    }
+    // Density: always set BOTH values (previously switching back to comfortable
+    // never reset the compact value — a small but real bug)
+    const compact = state.settings.density === 'compact';
+    document.documentElement.style.setProperty('--density-pad', compact ? '0.7em' : '1em');
+    document.documentElement.style.setProperty('--density-gap', compact ? '0.7em' : '1em');
+    applyAccent();
+    applyCustomCss();
+    applyViewMode();
     $('#themeVal').textContent = state.settings.theme;
     $('#fontVal').textContent = state.settings.font + 'px';
     $('#dirVal').textContent = state.settings.dir.toUpperCase();
     $('#densityVal').textContent = state.settings.density;
     $('#fontSlider').value = state.settings.font;
     renderThemeGrid();
+  }
+
+  // -------- Customization: accent color + custom CSS --------
+  function applyAccent() {
+    const c = state.settings.accent;
+    const root = document.documentElement;
+    if (!c) {
+      // reset to theme defaults
+      root.style.removeProperty('--accent');
+      root.style.removeProperty('--accent-bright');
+      root.style.removeProperty('--accent-dim');
+      root.style.removeProperty('--accent-glow');
+    } else {
+      root.style.setProperty('--accent', c);
+      root.style.setProperty('--accent-bright', c);
+      root.style.setProperty('--accent-dim', `color-mix(in srgb, ${c} 18%, transparent)`);
+      root.style.setProperty('--accent-glow', `color-mix(in srgb, ${c} 35%, transparent)`);
+    }
+    const picker = $('#accentColor');
+    if (picker) picker.value = c || '#d4af7f';
+  }
+
+  function applyCustomCss() {
+    let el = document.getElementById('lumenCustomCss');
+    if (!el) {
+      el = document.createElement('style');
+      el.id = 'lumenCustomCss';
+      document.head.appendChild(el);
+    }
+    el.textContent = state.settings.customCss || '';
+  }
+
+  function setAccent(color) {
+    state.settings.accent = color || '';
+    applyAccent();
+    save();
+  }
+
+  function setCustomCss(css) {
+    state.settings.customCss = css || '';
+    applyCustomCss();
+    save();
+  }
+
+  // -------- Viewer mode (read-only for people who just read) --------
+  function applyViewMode() {
+    document.body.classList.toggle('view-mode', !!state.settings.viewMode);
+    const btn = $('#toggleViewMode');
+    if (btn) {
+      btn.classList.toggle('is-on', !!state.settings.viewMode);
+      btn.title = state.settings.viewMode ? 'Viewer mode is ON — click to enable editing [V]' : 'Toggle viewer mode (hide all editing UI) [V]';
+    }
+  }
+
+  function toggleViewMode() {
+    state.settings.viewMode = !state.settings.viewMode;
+    applyViewMode();
+    save();
+    renderCmd($('#cmdInput').value || '');
+    toast(state.settings.viewMode ? '🔒 Viewer mode — editing hidden. Press V to get it back.' : '🔓 Editor mode enabled', state.settings.viewMode ? '🔒' : '🔓');
   }
 
   function setDir(dir) {
@@ -3150,7 +4177,7 @@ const Lumen = (() => {
   }
 
   function exportJSON() {
-    const data = { pages: state.pages, bookmarks: state.bookmarks, annotations: state.annotations, doc: state.doc, fileStore: fileStore, version: 1 };
+    const data = { pages: state.pages, bookmarks: state.bookmarks, annotations: state.annotations, doc: state.doc, fileStore: fileStore, version: 1, exportedAt: new Date().toISOString() };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -3170,9 +4197,34 @@ const Lumen = (() => {
   // The exported file is a runnable Lumen instance — open it anywhere.
   function exportSingleHTML() {
     toast('Building standalone HTML…');
-    const fullHtml = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
 
-    // Build clean page objects (strip internal state)
+    // 1) Build a CLEAN clone of the current document (no transient UI state,
+    //    no runtime-injected nodes) so the export is a pristine boot file.
+    const clone = document.documentElement.cloneNode(true);
+    // remove dynamic nodes that will be re-created at boot
+    clone.querySelectorAll('#fileProgressOverlay, #lumenCustomCss, style[data-lumen-lib-css], script[data-lumen-lib]').forEach(n => n.remove());
+    // reset body state classes
+    const cloneBody = clone.querySelector('body');
+    if (cloneBody) cloneBody.removeAttribute('class');
+    // reset overlays + loading screen
+    clone.querySelectorAll('.modal-overlay, .cmd-overlay, .grid-view, .editor-overlay, .zoom-overlay, .search-results, .editor-drophint')
+      .forEach(el => el.classList.remove('open'));
+    const loading = clone.querySelector('#loading');
+    if (loading) loading.classList.remove('hidden');
+    // clear runtime-rendered content (it is rebuilt from the embedded pages)
+    ['page', 'sidebar', 'tocList', 'gridContainer', 'editorPreview', 'versionsList', 'cmdResults', 'searchResults'].forEach(id => {
+      const el = clone.querySelector('#' + id);
+      if (el) el.innerHTML = '';
+    });
+    const editorText = clone.querySelector('#editorText');
+    if (editorText) editorText.textContent = '';
+    // reset scroll-dependent attributes on dynamic widgets
+    clone.querySelectorAll('[data-slider]').forEach(el => el.remove());
+    clone.querySelectorAll('.tour, .flow-chart').forEach(el => el.remove());
+
+    let fullHtml = '<!DOCTYPE html>\n' + clone.outerHTML;
+
+    // 2) Build the embedded content block
     const pagesToEmbed = state.pages.map(p => ({
       id: p.id,
       title: p.title,
@@ -3188,10 +4240,15 @@ const Lumen = (() => {
     const settingsToEmbed = { ...state.settings };
     const fileStoreToEmbed = { ...fileStore };
 
-    const pagesJson = JSON.stringify(pagesToEmbed, null, 2);
-    const docMetaJson = JSON.stringify(docMeta, null, 2);
-    const settingsJson = JSON.stringify(settingsToEmbed, null, 2);
-    const fileStoreJson = JSON.stringify(fileStoreToEmbed, null, 2);
+    // IMPORTANT: escape any literal closing-script sequence inside the JSON
+    // payloads, otherwise one written in a page would terminate the embedded
+    // script tag early and corrupt the export. (The escaped form is identical
+    // once JS parses the string.)
+    const safe = (json) => json.replace(/<\x2fscript/gi, '<\\/script');
+    const pagesJson = safe(JSON.stringify(pagesToEmbed, null, 2));
+    const docMetaJson = safe(JSON.stringify(docMeta, null, 2));
+    const settingsJson = safe(JSON.stringify(settingsToEmbed, null, 2));
+    const fileStoreJson = safe(JSON.stringify(fileStoreToEmbed, null, 2));
 
     // Build replacement script block. Split the closing tag so the HTML parser
     // does not prematurely close our own script.
@@ -3203,16 +4260,18 @@ const Lumen = (() => {
       + 'window.__LUMEN_FILE_STORE__ = ' + fileStoreJson + ';\n'
       + '</scr' + 'ipt>';
 
-    // Replace the documentation content block (handles both original and previously-exported markers)
-    const markerRegex = /<!-- (?:DEFAULT|EMBEDDED) DOCUMENTATION CONTENT[^>]*-->\s*<script>[\s\S]*?<\/script>/;
+    // 3) Replace the documentation content block (handles both original and previously-exported markers)
+    // The pattern below uses an escaped slash in the closing-tag part so the
+    // HTML parser never sees a real terminator inside this engine script.
+    const markerRegex = /<!-- (?:DEFAULT|EMBEDDED) DOCUMENTATION CONTENT[^>]*-->\s*<script>[\s\S]*?<\x2fscript>/;
     let newHtml = fullHtml;
     if (!markerRegex.test(newHtml)) {
-      toast('Export failed: documentation block not found');
+      toast('Export failed: documentation block not found', '⚠');
       return;
     }
     newHtml = newHtml.replace(markerRegex, () => replacementBlock);
 
-    // Update static fallback text (visible before JS runs)
+    // 4) Update static fallback text (visible before JS runs)
     newHtml = newHtml.replace(/<title>[^<]*<\/title>/,
       '<title>' + escapeHtml(state.doc.name + (state.doc.description ? ' · ' + state.doc.description : '')) + '<\/title>');
     newHtml = newHtml.replace(/<meta name="description" content="[^"]*">/,
@@ -3226,7 +4285,7 @@ const Lumen = (() => {
     newHtml = newHtml.replace(/<div class="loader-brand">[^<]*<\/div>/,
       '<div class="loader-brand">' + escapeHtml((state.doc.name || 'LUMEN').toUpperCase() + ' · DOCUMENTATION') + '<\/div>');
 
-    // Trigger download
+    // 5) Trigger download
     const blob = new Blob([newHtml], { type: 'text/html;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -3236,7 +4295,8 @@ const Lumen = (() => {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    toast('Exported standalone HTML (' + Math.round(newHtml.length / 1024) + ' KB)');
+    const kb = Math.round(newHtml.length / 1024);
+    toast('Exported standalone HTML (' + (kb > 1024 ? (kb / 1024).toFixed(1) + ' MB' : kb + ' KB') + ')');
   }
 
   // -------- New document from scratch --------
@@ -3256,6 +4316,7 @@ const Lumen = (() => {
     const version = $('#newDocVersion').value.trim() || '1.0';
     const icon = $('#newDocIcon').value.trim() || '📚';
 
+    if (state.pages.length) snapshot('Before new document "' + name + '"');
     state.doc = { name, description: desc, version, author: state.doc.author || '', icon };
     state.pages = [{
       id: 'cover',
@@ -3299,7 +4360,8 @@ const Lumen = (() => {
     const page = state.pages.find(p => p.id === pageId);
     if (!page) return false;
     // Confirm before deleting
-    if (!confirm('Delete "' + page.title + '"? This cannot be undone.')) return false;
+    if (!confirm('Delete "' + page.title + '"? A snapshot is taken first, so you can restore it from History (H).')) return false;
+    snapshot('Before deleting "' + page.title + '"');
     // Remove from pages
     state.pages = state.pages.filter(p => p.id !== pageId);
     // Remove from bookmarks
@@ -3307,6 +4369,8 @@ const Lumen = (() => {
     if (bmIdx >= 0) state.bookmarks.splice(bmIdx, 1);
     // Remove from last visited
     delete state.lastVisited[pageId];
+    // Clean up files no longer referenced
+    gcFiles();
     // Rebuild search index
     buildSearchIndex();
     save();
@@ -3331,7 +4395,7 @@ const Lumen = (() => {
         go('cover');
       }
     }
-    toast('Page deleted');
+    toast('Page deleted — restore it anytime with H (History)');
     return true;
   }
 
@@ -3376,23 +4440,20 @@ const Lumen = (() => {
   let editingPageId = null;
   let katexLoaded = false;
 
-  // Lazy-load KaTeX only when math content is detected
+  // Lazy-load KaTeX only when math content is detected (through the offline-capable loader)
   function ensureKatexLoaded() {
     if (katexLoaded || window.katex) { katexLoaded = true; return Promise.resolve(); }
-    return new Promise((resolve) => {
-      const css = document.createElement('link');
-      css.rel = 'stylesheet';
-      css.href = 'https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css';
-      document.head.appendChild(css);
-      const s1 = document.createElement('script');
-      s1.src = 'https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js';
-      s1.onload = () => { katexLoaded = true; resolve(); };
-      s1.onerror = () => { console.warn('KaTeX failed to load'); resolve(); };
-      document.head.appendChild(s1);
-    });
+    if (window.LumenLibs) {
+      return window.LumenLibs.ensure(['katex-js', 'katex-css']).then(() => {
+        katexLoaded = !!window.katex;
+        if (!katexLoaded) console.warn('KaTeX failed to load');
+      });
+    }
+    return Promise.resolve();
   }
 
   function openEditor(pageId) {
+    if (state.settings.viewMode) { toast('Viewer mode is on — press V to enable editing', '🔒'); return; }
     editingPageId = pageId || null;
     const page = pageId ? state.pages.find(p => p.id === pageId) : null;
     $('#editorTitle').value = page ? page.title : '';
@@ -3425,6 +4486,9 @@ const Lumen = (() => {
     $('#editorPreview').innerHTML = renderMarkdown(text);
     // Initialize sliders in preview
     $('#editorPreview').querySelectorAll('.slider').forEach(s => initializeSlider(s));
+    // Walkthroughs + flowcharts in preview
+    initializeTours($('#editorPreview'));
+    initializeFlows($('#editorPreview'));
     // If KaTeX was not loaded at render time, math-placeholder elements exist — load KaTeX and render them
     const preview = $('#editorPreview');
     if (preview.querySelector('.math-placeholder')) {
@@ -3438,6 +4502,7 @@ const Lumen = (() => {
     const content = $('#editorText').value;
     // Auto-detect direction based on content (Persian/Arabic → rtl, else ltr)
     const detectedDir = detectDirection(content);
+    let isNew = false;
     if (editingPageId) {
       const p = state.pages.find(x => x.id === editingPageId);
       if (p) { p.title = title; p.icon = icon; p.section = section; p.content = content; p.dir = detectedDir; }
@@ -3445,11 +4510,13 @@ const Lumen = (() => {
       const id = slugify(title) + '-' + Math.random().toString(36).slice(2, 6);
       state.pages.push({ id, title, icon, section, content, tags: [], dir: detectedDir });
       editingPageId = id;
+      isNew = true;
     }
     buildSearchIndex();
     save();
     renderSidebar();
-    if (state.currentPageId === editingPageId || !state.currentPageId) renderPage(editingPageId);
+    if (isNew) go(editingPageId);              // navigate to the newly created page
+    else if (state.currentPageId === editingPageId || !state.currentPageId) renderPage(editingPageId);
     toast('Page saved');
     closeEditor();
   }
@@ -3493,6 +4560,9 @@ const Lumen = (() => {
       case 'badge': snippet = `[badge:success:${selected || 'Label'}]`; placeholder = 'Label'; break;
       case 'slider': snippet = `\n:::slider\n![Image 1](https://picsum.photos/800/400?random=1)\n![Image 2](https://picsum.photos/800/400?random=2)\n![Image 3](https://picsum.photos/800/400?random=3)\n:::\n`; cursorAtEnd = true; break;
       case 'mermaid': snippet = `\n\`\`\`mermaid\ngraph TD\n  A[Start] --> B{Decision}\n  B -->|Yes| C[Action 1]\n  B -->|No| D[Action 2]\n  C --> E[End]\n  D --> E\n\`\`\`\n`; cursorAtEnd = true; break;
+      case 'flow': snippet = `\n:::flow\nSTART[Start]\nCHECK{Ready?}\nLOAD<Load config>\nSAVE(Save result)\nSTART > CHECK\nCHECK v LOAD | yes\nCHECK > SAVE | no\nLOAD > SAVE\n:::\n`; cursorAtEnd = true; break;
+      case 'tour': snippet = `\n:::tour\n![Step 1 — click the gear icon](https://picsum.photos/800/450?random=10) 88%,12% -> 2\n![Step 2 — the settings panel](https://picsum.photos/800/450?random=11)\n:::\n`; cursorAtEnd = true; break;
+      case 'embed': snippet = `\n:::embed\nhttps://www.youtube.com/embed/aqz-KE-bpKQ\n:::\n`; cursorAtEnd = true; break;
     }
 
     ta.value = before + snippet + after;
@@ -3565,7 +4635,7 @@ const Lumen = (() => {
   }
 
   // -------- Drag-and-drop file upload --------
-  // Dropped files are stored in fileStore (in memory + persisted).
+  // Dropped files are stored in fileStore (in memory + IndexedDB).
   // The editor source gets a SHORT reference like ![name](file://abc123) — no base64 clutter.
   // At render time, resolveFileRefs() swaps file:// back to the data URL.
   async function handleFileDrop(files) {
@@ -3592,7 +4662,32 @@ const Lumen = (() => {
     hideFileProgress();
     ta.focus();
     updateEditorPreview();
-    save(); // persist fileStore
+    save(); // persist docs (files persist to IndexedDB via saveFileToStore)
+    updateStorageStats();
+  }
+
+  // Downscale big raster images (screenshots, photos) so uploads stay small.
+  // Returns a smaller JPEG data URL, or null if compression isn't wanted/won't help.
+  async function compressImage(file) {
+    if (state.settings.compressImages === false) return null;
+    const ext = file.name.split('.').pop().toLowerCase();
+    if (!['png', 'jpg', 'jpeg', 'webp'].includes(ext)) return null;      // gif/svg keep animation/vectors
+    if (file.size < 300 * 1024) return null;                              // already small
+    const MAX_W = 1600;
+    try {
+      const bmp = await createImageBitmap(file);
+      const scale = Math.min(1, MAX_W / bmp.width);
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(bmp.width * scale));
+      canvas.height = Math.max(1, Math.round(bmp.height * scale));
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);                    // flatten transparency for JPEG
+      ctx.drawImage(bmp, 0, 0, canvas.width, canvas.height);
+      if (bmp.close) bmp.close();
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+      return dataUrl.length < file.size ? dataUrl : null;                 // keep original if no gain
+    } catch (e) { return null; }
   }
 
   async function fileToMarkdownSnippet(file, onProgress) {
@@ -3601,9 +4696,10 @@ const Lumen = (() => {
     const baseName = name.replace(/\.[^.]+$/, '');
     const sizeKB = Math.round(file.size / 1024);
 
-    // Warn for large files (> 2MB) — localStorage has ~5MB limit
-    if (file.size > 2 * 1024 * 1024) {
-      toast('⚠ ' + name + ' is ' + sizeKB + 'KB — may exceed localStorage limit', '⚠');
+    // Warn for very large files — they now go to IndexedDB (large quota),
+    // but exports and page loads will still feel their weight.
+    if (file.size > 8 * 1024 * 1024) {
+      toast('⚠ ' + name + ' is ' + Math.round(sizeKB / 1024) + 'MB — consider trimming large media', '⚠');
     }
 
     // Binary media files (image/audio/video/pdf) — store in fileStore, return short reference
@@ -3612,7 +4708,16 @@ const Lumen = (() => {
     const videoExts = ['mp4', 'webm', 'mov', 'avi', 'mkv', 'ogv'];
 
     if (imageExts.includes(ext) || audioExts.includes(ext) || videoExts.includes(ext) || ext === 'pdf') {
-      const dataUrl = await fileToDataUrl(file, onProgress);
+      let dataUrl = await fileToDataUrl(file, onProgress);
+      // Try to shrink big images first (fixes the "too large uploads" problem at the source)
+      const compressed = await compressImage(file);
+      if (compressed && imageExts.includes(ext)) {
+        const saved = Math.round((1 - compressed.length / dataUrl.length) * 100);
+        if (saved > 10) {
+          dataUrl = compressed;
+          toast('Compressed ' + name + ' by ' + saved + '%', '🗜');
+        }
+      }
       const id = saveFileToStore(name, ext, dataUrl);
       const fileRef = 'file://' + id;
       if (imageExts.includes(ext)) {
@@ -3732,13 +4837,6 @@ const Lumen = (() => {
     }
   }
 
-  function deleteEditorPage() {
-    if (!editingPageId) return;
-    const pageIdToDelete = editingPageId;
-    closeEditor();
-    deletePage(pageIdToDelete);
-  }
-
   // -------- Grid view (organized by sections, with delete + edit on each card) --------
   function openGrid() {
     const container = $('#gridContainer');
@@ -3822,20 +4920,259 @@ const Lumen = (() => {
     $('#gridView').classList.add('open');
   }
 
+  // -------- Storage stats (shown in Settings → Data management) --------
+  function fmtBytes(n) {
+    if (n > 1024 * 1024) return (n / 1024 / 1024).toFixed(1) + ' MB';
+    if (n > 1024) return Math.round(n / 1024) + ' KB';
+    return n + ' B';
+  }
+  function updateStorageStats() {
+    const el = $('#storageStats');
+    if (!el) return;
+    try {
+      const docsSize = new Blob([localStorage.getItem(STORAGE_KEY) || '']).size;
+      const files = Object.values(fileStore);
+      const fileSize = files.reduce((s, f) => s + ((f && f.dataUrl) || '').length, 0);
+      loadVersions();
+      el.textContent = `Docs: ${fmtBytes(docsSize)} in localStorage · Media: ${files.length} files (${fmtBytes(fileSize)}) in IndexedDB · Snapshots: ${versions.length}/${MAX_VERSIONS}`;
+    } catch (e) { /* non-fatal */ }
+  }
+
+  // -------- Online / offline indicator --------
+  function updateNetStatus() {
+    const el = $('#statusNet');
+    if (!el) return;
+    const online = navigator.onLine;
+    el.textContent = online ? 'Online' : 'Offline · cached libs';
+    el.classList.toggle('net-offline', !online);
+    el.classList.toggle('net-online', online);
+  }
+
+  // -------- GitHub sync / update system --------
+  // Pulls a newer documentation (lumen-data.json, an exported HTML, or a .md
+  // file) from a GitHub repo — optionally with a token for private repos —
+  // and saves it locally in the browser. This is the "update system".
+  function syncSignature(data) {
+    if (!data) return '';
+    return JSON.stringify({
+      n: (data.pages || []).length,
+      v: (data.doc && data.doc.version) || '',
+      at: data.exportedAt || '',
+      ids: (data.pages || []).map(p => p.id + ':' + (p.content || '').length),
+    });
+  }
+
+  async function fetchRemoteDoc(cfg) {
+    const path = (cfg.path || 'lumen-data.json').replace(/^\/+/, '');
+    const branch = cfg.branch || 'main';
+    let text;
+    if (cfg.token) {
+      const api = `https://api.github.com/repos/${cfg.repo}/contents/${encodeURI(path)}?ref=${encodeURIComponent(branch)}&t=${Date.now()}`;
+      const r = await fetch(api, { headers: { Authorization: 'Bearer ' + cfg.token, Accept: 'application/vnd.github+json' } });
+      if (!r.ok) throw new Error('GitHub API responded ' + r.status);
+      const j = await r.json();
+      // GitHub returns base64 with newlines; decode for UTF-8 safety
+      const bin = atob(j.content.replace(/\n/g, ''));
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      text = new TextDecoder().decode(bytes);
+    } else {
+      const raw = `https://raw.githubusercontent.com/${cfg.repo}/${branch}/${path}?t=${Date.now()}`;
+      const r = await fetch(raw);
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      text = await r.text();
+    }
+    // Parse by file type
+    if (/\.json$/i.test(path)) {
+      const data = JSON.parse(text);
+      if (!data.pages) throw new Error('JSON has no pages array (use a Lumen JSON export)');
+      return data;
+    }
+    if (/\.html?$/i.test(path)) {
+      const m = text.match(/window\.__LUMEN_DEFAULT_PAGES__\s*=\s*(\[[\s\S]*?\n\]);/);
+      if (!m) throw new Error('No embedded pages found in that HTML (export it from Lumen first)');
+      return { pages: JSON.parse(m[1]) };
+    }
+    if (/\.md$/i.test(path)) {
+      const title = path.split('/').pop().replace(/\.md$/i, '');
+      return { pages: [{ id: slugify(title), title, section: 'Synced', icon: '📄', tags: [], dir: state.settings.dir, content: text }] };
+    }
+    throw new Error('Unsupported file type — use .json, .html, or .md');
+  }
+
+  function applyRemoteDoc(data) {
+    snapshot('Before applying remote update');
+    state.pages = data.pages;
+    if (data.doc) state.doc = { ...state.doc, ...data.doc };
+    if (data.bookmarks) state.bookmarks = data.bookmarks;
+    if (data.fileStore) {
+      Object.keys(fileStore).forEach(k => delete fileStore[k]);
+      Object.assign(fileStore, data.fileStore);
+      persistFileStore();
+    }
+    applyDocSettings();
+    buildSearchIndex();
+    save();
+    renderSidebar();
+    go(state.pages[0] ? state.pages[0].id : null);
+    updateStorageStats();
+  }
+
+  async function checkForUpdates(interactive = true) {
+    const cfg = state.settings.sync || {};
+    if (!cfg.repo) {
+      if (interactive) { toast('Set up GitHub sync in Settings first', '⚙'); $('#settingsModal').classList.add('open'); }
+      return;
+    }
+    const statusEl = $('#syncStatus');
+    if (statusEl) statusEl.textContent = 'Checking ' + cfg.repo + '…';
+    try {
+      const data = await fetchRemoteDoc(cfg);
+      const remoteSig = syncSignature(data);
+      const localSig = syncSignature({ pages: state.pages, doc: state.doc });
+      if (remoteSig === localSig) {
+        if (statusEl) statusEl.textContent = '✓ Up to date (' + new Date().toLocaleTimeString() + ')';
+        else if (interactive) toast('You are up to date', '✓');
+        if (interactive && !statusEl) {} // status element always present in settings
+      } else {
+        if (statusEl) statusEl.textContent = 'Update available — ' + (data.pages || []).length + ' pages on ' + (cfg.branch || 'main');
+        if (interactive) {
+          if (confirm('An updated documentation is available on GitHub (' + ((data.pages || []).length) + ' pages).\n\nApply it now? Your current state is snapshotted first.')) {
+            applyRemoteDoc(data);
+            if (statusEl) statusEl.textContent = '✓ Updated ' + new Date().toLocaleTimeString();
+            toast('Documentation updated from GitHub', '⬇');
+          }
+        } else {
+          toast('Update available — Settings → Update & Sync to apply', '⬇');
+        }
+      }
+    } catch (e) {
+      if (statusEl) statusEl.textContent = '⚠ ' + e.message;
+      if (interactive) toast('Update check failed: ' + e.message, '⚠');
+    }
+  }
+
+  // -------- AI assist (optional, bring-your-own-endpoint) --------
+  // Works with any OpenAI-compatible chat completions API (OpenAI, OpenRouter,
+  // Ollama, LM Studio…). The endpoint + key stay in this browser's localStorage.
+  const AI_ACTIONS = [
+    { id: 'improve', icon: '✨', label: 'Improve writing', prompt: 'Improve the clarity, flow, and professionalism of the following markdown. Keep the same meaning and all markdown syntax intact. Return ONLY the improved markdown, no commentary.' },
+    { id: 'grammar', icon: '✎', label: 'Fix grammar & typos', prompt: 'Fix grammar, spelling, and punctuation in the following markdown. Do not change its meaning or structure. Return ONLY the corrected markdown.' },
+    { id: 'summarize', icon: '≡', label: 'Summarize', prompt: 'Condense the following markdown to its essential points. Keep headings structure and markdown syntax. Return ONLY the summary.' },
+    { id: 'expand', icon: '＋', label: 'Expand with detail', prompt: 'Expand the following markdown with more detail, context, and examples. Keep the original language (English or Persian) and markdown syntax. Return ONLY the expanded markdown.' },
+    { id: 'to-fa', icon: '🇮🇷', label: 'Translate → Persian', prompt: 'Translate the following markdown to Persian (Farsi). Keep markdown syntax, code blocks, URLs, and technical terms intact. Write natural, fluent Persian. Return ONLY the translation.' },
+    { id: 'to-en', icon: '🇬🇧', label: 'Translate → English', prompt: 'Translate the following markdown to English. Keep markdown syntax, code blocks, URLs, and technical terms intact. Return ONLY the translation.' },
+  ];
+
+  function toggleAiMenu() {
+    const menu = $('#aiMenu');
+    if (!menu) return;
+    if (menu.classList.contains('open')) { menu.classList.remove('open'); return; }
+    const cfg = state.settings.ai || {};
+    menu.innerHTML = AI_ACTIONS.map(a =>
+      `<div class="page-link-item ai-action" data-ai="${a.id}"><span class="pl-icon">${a.icon}</span><span>${a.label}</span></div>`
+    ).join('') +
+    (cfg.endpoint ? '' : '<div class="page-link-item" style="color: var(--text-muted);">⚙ Configure an endpoint in Settings…</div>');
+    menu.querySelectorAll('.ai-action').forEach(item => {
+      item.addEventListener('click', () => { menu.classList.remove('open'); runAiAction(item.dataset.ai); });
+    });
+    const btn = $('#tbAI');
+    if (btn) {
+      const rect = btn.getBoundingClientRect();
+      const overlayRect = $('#editorOverlay').getBoundingClientRect();
+      menu.style.top = (rect.bottom - overlayRect.top + 4) + 'px';
+      menu.style.left = (rect.left - overlayRect.left) + 'px';
+    }
+    menu.classList.add('open');
+  }
+
+  async function runAiAction(actionId) {
+    const cfg = state.settings.ai || {};
+    const action = AI_ACTIONS.find(a => a.id === actionId);
+    if (!action) return;
+    if (!cfg.endpoint) {
+      toast('Set an AI endpoint in Settings → AI first', '⚙');
+      $('#settingsModal').classList.add('open');
+      return;
+    }
+    const ta = $('#editorText');
+    const start = ta.selectionStart, end = ta.selectionEnd;
+    const sel = ta.value.substring(start, end);
+    if (!sel.trim()) { toast('Select some text in the editor first', '✎'); return; }
+
+    const modal = $('#aiModal');
+    const resultEl = $('#aiResult');
+    $('#aiActionLabel').textContent = action.label;
+    resultEl.value = '';
+    modal.classList.add('open');
+
+    try {
+      const r = await fetch(cfg.endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(cfg.key ? { Authorization: 'Bearer ' + cfg.key } : {}),
+        },
+        body: JSON.stringify({
+          model: cfg.model || 'gpt-4o-mini',
+          messages: [
+            { role: 'system', content: 'You are a documentation writing assistant inside a markdown editor. Always return only the transformed markdown text with no explanations, no code fences around the whole answer, and no commentary.' },
+            { role: 'user', content: action.prompt + '\n\n---\n\n' + sel },
+          ],
+          temperature: 0.4,
+        }),
+      });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const j = await r.json();
+      const out = (j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content || '').trim();
+      if (!out) throw new Error('Empty response');
+      resultEl.value = out.replace(/^```markdown\n?|```$/g, '');
+      $('#aiApply').disabled = false;
+    } catch (e) {
+      resultEl.value = '⚠ ' + e.message + '\n\nCheck the endpoint URL, model name, and key in Settings → AI. Any OpenAI-compatible endpoint works (OpenAI, OpenRouter, Ollama, LM Studio…).';
+      $('#aiApply').disabled = true;
+    }
+  }
+
+  function applyAiResult() {
+    const ta = $('#editorText');
+    const resultEl = $('#aiResult');
+    if (!resultEl.value || resultEl.value.startsWith('⚠')) return;
+    const start = ta.selectionStart, end = ta.selectionEnd;
+    ta.value = ta.value.substring(0, start) + resultEl.value + ta.value.substring(end);
+    ta.focus();
+    updateEditorPreview();
+    $('#aiModal').classList.remove('open');
+    toast('AI edit applied — Ctrl+S to save the page', '✨');
+  }
+
+  // -------- History navigation (back / forward) --------
+  function goBack() {
+    if (state.history.length > 1) {
+      state.history.pop();                 // drop current
+      const prev = state.history.pop();    // take previous
+      go(prev);
+    } else toast('No history yet');
+  }
+
   // -------- Command palette --------
   const COMMANDS = [
     { id: 'toggle-theme', icon: '🎨', label: 'Cycle theme', hint: 'T', run: cycleTheme },
     { id: 'toggle-sidebar', icon: '☰', label: 'Toggle sidebar', hint: 'S', run: () => document.body.classList.toggle('sidebar-collapsed') },
     { id: 'toggle-toc', icon: '📋', label: 'Toggle on-page TOC', hint: 'O', run: () => document.body.classList.toggle('toc-collapsed') },
     { id: 'reading-mode', icon: '📖', label: 'Toggle reading mode', hint: 'R', run: () => document.body.classList.toggle('reading-mode') },
-    { id: 'new-page', icon: '✏️', label: 'New page (editor)', hint: 'E', run: () => openEditor() },
-    { id: 'edit-page', icon: '📝', label: 'Edit current page', hint: '', run: () => openEditor(state.currentPageId) },
-    { id: 'delete-page', icon: '🗑️', label: 'Delete current page', hint: '', run: () => deletePage(state.currentPageId) },
+    { id: 'viewer-mode', icon: '🔒', label: 'Toggle viewer mode (hide editing)', hint: 'V', run: toggleViewMode },
+    { id: 'history', icon: '⏱', label: 'Version history (snapshots)', hint: 'H', run: openVersions },
+    { id: 'new-page', icon: '✏️', label: 'New page (editor)', hint: 'E', editOnly: true, run: () => openEditor() },
+    { id: 'edit-page', icon: '📝', label: 'Edit current page', hint: '', editOnly: true, run: () => openEditor(state.currentPageId) },
+    { id: 'delete-page', icon: '🗑️', label: 'Delete current page', hint: '', editOnly: true, run: () => deletePage(state.currentPageId) },
     { id: 'grid', icon: '⊞', label: 'Grid view (all pages)', hint: 'G', run: openGrid },
     { id: 'export-html', icon: '📦', label: 'Export as single HTML', hint: '', run: exportSingleHTML },
     { id: 'export-md', icon: '📄', label: 'Export as markdown zip', hint: '', run: exportMarkdown },
     { id: 'export-json', icon: '💾', label: 'Export JSON backup', hint: '', run: exportJSON },
-    { id: 'new-doc', icon: '✨', label: 'New document from scratch', hint: '', run: openNewDocModal },
+    { id: 'new-doc', icon: '✨', label: 'New document from scratch', hint: '', editOnly: true, run: openNewDocModal },
+    { id: 'sync', icon: '⬇', label: 'Check for updates (GitHub sync)', hint: '', run: () => checkForUpdates(true) },
+    { id: 'back', icon: '←', label: 'Back (history)', hint: 'Alt+←', run: goBack },
     { id: 'settings', icon: '⚙️', label: 'Open settings', hint: '', run: () => $('#settingsModal').classList.add('open') },
     { id: 'prev', icon: '←', label: 'Previous page', hint: 'J', run: goPrev },
     { id: 'next', icon: '→', label: 'Next page', hint: 'K', run: goNext },
@@ -3860,8 +5197,8 @@ const Lumen = (() => {
       items.push({ type: 'section', label: 'Pages' });
       pages.forEach(p => items.push({ type: 'page', icon: p.icon || '📄', label: p.title, meta: p.section, action: () => go(p.id) }));
     }
-    // Commands
-    const cmds = COMMANDS.filter(c => !q || c.label.toLowerCase().includes(q));
+    // Commands (edit-only commands are hidden in viewer mode)
+    const cmds = COMMANDS.filter(c => (!q || c.label.toLowerCase().includes(q)) && !(state.settings.viewMode && c.editOnly));
     if (cmds.length) {
       items.push({ type: 'section', label: 'Commands' });
       cmds.forEach(c => items.push({ type: 'cmd', icon: c.icon, label: c.label, meta: c.hint, action: c.run }));
@@ -3890,19 +5227,30 @@ const Lumen = (() => {
     });
   }
 
+  // Bind the dynamically rendered close button (renderSearch rebuilds the container)
+  function bindSearchClose() {
+    const btn = $('#closeSearchBtn');
+    if (btn) btn.addEventListener('click', () => {
+      $('#searchResults').classList.remove('open');
+      $('#searchInput').blur();
+    });
+  }
+
   // -------- Search UI --------
   let searchActiveIndex = 0;
+  const SEARCH_CLOSE_BTN = '<button class="dropdown-close" id="closeSearchBtn" aria-label="Close search">✕</button>';
   function renderSearch(query) {
     const results = search(query);
     const container = $('#searchResults');
     if (!query.trim()) { container.classList.remove('open'); return; }
     if (!results.length) {
-      container.innerHTML = '<div class="cmd-empty">No pages found</div>';
+      container.innerHTML = SEARCH_CLOSE_BTN + '<div class="cmd-empty">No pages found</div>';
+      bindSearchClose();
       container.classList.add('open');
       return;
     }
     searchActiveIndex = 0;
-    container.innerHTML = results.map((r, i) => {
+    container.innerHTML = SEARCH_CLOSE_BTN + results.map((r, i) => {
       const active = i === 0 ? ' active' : '';
       const snippet = r.snippet ? r.snippet.slice(0, 120) + (r.snippet.length > 120 ? '…' : '') : '';
       const re = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
@@ -3914,6 +5262,7 @@ const Lumen = (() => {
         <div class="search-result-path">${escapeHtml(r.pageTitle || '')} · ${r.type}</div>
       </div>`;
     }).join('');
+    bindSearchClose();
     container.classList.add('open');
     $$('.search-result').forEach(el => {
       el.addEventListener('click', () => { go(el.dataset.page); $('#searchInput').value = ''; container.classList.remove('open'); });
@@ -3978,6 +5327,8 @@ const Lumen = (() => {
       $$('.modal-overlay, .cmd-overlay, .grid-view, .editor-overlay, .zoom-overlay').forEach(el => el.classList.remove('open'));
       return;
     }
+    // Alt+← / Alt+→ — back / forward in local history
+    if (e.altKey && e.key === 'ArrowLeft') { e.preventDefault(); goBack(); return; }
     // Use toLowerCase so Caps Lock and Shift don't break shortcuts
     const key = e.key.toLowerCase();
     // ? — help (shift+/ on most keyboards)
@@ -3995,9 +5346,13 @@ const Lumen = (() => {
     if (key === 'o') { e.preventDefault(); document.body.classList.toggle('toc-collapsed'); return; }
     // r — reading mode
     if (key === 'r') { e.preventDefault(); document.body.classList.toggle('reading-mode'); toast(document.body.classList.contains('reading-mode') ? 'Reading mode on' : 'Reading mode off'); return; }
+    // v — viewer mode (hide editing for read-only audiences)
+    if (key === 'v') { e.preventDefault(); toggleViewMode(); return; }
+    // h — version history
+    if (key === 'h') { e.preventDefault(); openVersions(); return; }
     // g — grid
     if (key === 'g') { e.preventDefault(); openGrid(); return; }
-    // e — editor
+    // e — editor (blocked in viewer mode)
     if (key === 'e') { e.preventDefault(); openEditor(); return; }
     // b — bookmark
     if (key === 'b') { e.preventDefault(); toggleBookmark(state.currentPageId); return; }
@@ -4009,22 +5364,41 @@ const Lumen = (() => {
   }
 
   // -------- Init --------
-  function init() {
+  async function init() {
     load();
+    // Bring IndexedDB-stored media into memory (needed for rendering file:// refs)
+    try {
+      const stored = await FileDB.all();
+      Object.keys(fileStore).forEach(k => { if (!stored[k]) delete fileStore[k]; });
+      Object.assign(fileStore, stored);
+    } catch (e) { /* IndexedDB unavailable — pages still work, media refs degrade */ }
+    // Guard: an empty/invalid pages array should not brick the app
+    if (!state.pages.length) {
+      state.pages = [{
+        id: 'cover',
+        title: state.doc.name || 'Lumen',
+        section: 'Start',
+        icon: state.doc.icon || '📄',
+        dir: state.settings.dir,
+        layout: 'cover',
+        content: '# ' + (state.doc.name || 'Lumen') + '\n\nNo pages yet. Press E to create one.\n',
+      }];
+    }
     configureMarked();
     applySettings();
     applyDocSettings();
     buildSearchIndex();
 
-    // Mermaid config
+    // Mermaid config (follows the current theme)
     if (window.mermaid) {
-      mermaid.initialize({ startOnLoad: false, theme: 'dark', securityLevel: 'loose' });
+      const light = ['daylight', 'sepia'].includes(state.settings.theme);
+      mermaid.initialize({ startOnLoad: false, theme: light ? 'default' : 'dark', securityLevel: 'loose' });
     }
 
     // Bind events
     $('#toggleSidebar').addEventListener('click', () => document.body.classList.toggle('sidebar-collapsed'));
     $('#toggleTheme').addEventListener('click', cycleTheme);
-    $('#openSettings').addEventListener('click', () => $('#settingsModal').classList.add('open'));
+    $('#openSettings').addEventListener('click', () => { updateStorageStats(); $('#settingsModal').classList.add('open'); });
     $('#closeSettings').addEventListener('click', () => $('#settingsModal').classList.remove('open'));
     $('#settingsModal').addEventListener('click', (e) => { if (e.target.id === 'settingsModal') $('#settingsModal').classList.remove('open'); });
     $('#openGrid').addEventListener('click', openGrid);
@@ -4096,6 +5470,21 @@ const Lumen = (() => {
         else if (key === 'k') { e.preventDefault(); togglePageLinkDropdown(); }
       }
     });
+    // AI menu (editor toolbar)
+    const tbAI = $('#tbAI');
+    if (tbAI) {
+      tbAI.addEventListener('click', (e) => { e.stopPropagation(); toggleAiMenu(); });
+      document.addEventListener('click', (e) => {
+        const menu = $('#aiMenu');
+        if (menu && !e.target.closest('#aiMenu') && !e.target.closest('#tbAI')) menu.classList.remove('open');
+      });
+    }
+    const aiApply = $('#aiApply');
+    if (aiApply) aiApply.addEventListener('click', applyAiResult);
+    const aiClose = $('#closeAiModal');
+    if (aiClose) aiClose.addEventListener('click', () => $('#aiModal').classList.remove('open'));
+    const aiModalEl = $('#aiModal');
+    if (aiModalEl) aiModalEl.addEventListener('click', (e) => { if (e.target.id === 'aiModal') aiModalEl.classList.remove('open'); });
     // Export menu + single HTML button
     $('#exportBtn').addEventListener('click', () => $('#exportModal').classList.add('open'));
     $('#exportHtmlBtn').addEventListener('click', exportSingleHTML);
@@ -4130,6 +5519,7 @@ const Lumen = (() => {
       try {
         const data = JSON.parse(text);
         if (data.pages) {
+          snapshot('Before JSON import');
           state.pages = data.pages;
           state.bookmarks = data.bookmarks || [];
           state.annotations = data.annotations || {};
@@ -4138,33 +5528,133 @@ const Lumen = (() => {
           if (data.fileStore) {
             Object.keys(fileStore).forEach(k => delete fileStore[k]);
             Object.assign(fileStore, data.fileStore);
+            persistFileStore();
           }
           applyDocSettings();
           buildSearchIndex();
           save();
           renderSidebar();
-          if (state.currentPageId) renderPage(state.currentPageId);
+          // Always land on the first page of the imported set (the old current
+          // page id usually doesn't exist in the new data)
+          go(state.pages[0] ? state.pages[0].id : null);
+          updateStorageStats();
           toast('Imported JSON backup');
         }
-      } catch (err) { toast('Invalid JSON file'); }
+      } catch (err) { toast('Invalid JSON file', '⚠'); }
     });
     $('#resetBtn').addEventListener('click', () => {
-      if (!confirm('Reset to default documentation? This will erase your custom pages, bookmarks, and document metadata.')) return;
+      if (!confirm('Reset to default documentation? This will erase your custom pages, bookmarks, and document metadata. A snapshot is taken first.')) return;
+      snapshot('Before reset');
       localStorage.removeItem(STORAGE_KEY);
       state.pages = getDefaultDocs().slice();
-      state.doc = { name: 'Lumen', description: 'A single-file static documentation engine', version: '1.0', author: '', icon: '✦' };
+      state.doc = { name: 'Lumen', description: 'A single-file static documentation engine', version: '1.1', author: '', icon: '✦' };
       state.bookmarks = [];
       state.annotations = {};
+      state.currentPageId = null;
       applyDocSettings();
       buildSearchIndex();
       save();
       renderSidebar();
       go(state.pages[0].id);
+      updateStorageStats();
       toast('Reset to defaults');
     });
     $('#fontSlider').addEventListener('input', (e) => setFont(e.target.value));
     $$('[data-dir]').forEach(b => b.addEventListener('click', () => setDir(b.dataset.dir)));
     $$('[data-density]').forEach(b => b.addEventListener('click', () => setDensity(b.dataset.density)));
+
+    // Viewer mode toggle
+    const tvm = $('#toggleViewMode');
+    if (tvm) tvm.addEventListener('click', toggleViewMode);
+
+    // Version history modal
+    const closeVersions = $('#closeVersions');
+    if (closeVersions) closeVersions.addEventListener('click', () => $('#versionsModal').classList.remove('open'));
+    const versionsModalEl = $('#versionsModal');
+    if (versionsModalEl) versionsModalEl.addEventListener('click', (e) => { if (e.target.id === 'versionsModal') versionsModalEl.classList.remove('open'); });
+    const versionsOpenBtn = $('#versionsOpenBtn');
+    if (versionsOpenBtn) versionsOpenBtn.addEventListener('click', () => { $('#settingsModal').classList.remove('open'); openVersions(); });
+    const versionsSnapBtn = $('#versionsSnapBtn');
+    if (versionsSnapBtn) versionsSnapBtn.addEventListener('click', () => { snapshot('Manual snapshot'); openVersions(); toast('Snapshot created', '⏱'); });
+    const versionsHistoryBtn = $('#versionsHistoryBtn');
+    if (versionsHistoryBtn) versionsHistoryBtn.addEventListener('click', openVersions);
+
+    // Customization: accent color + custom CSS
+    const accentColor = $('#accentColor');
+    if (accentColor) accentColor.addEventListener('input', (e) => setAccent(e.target.value));
+    const accentReset = $('#accentReset');
+    if (accentReset) accentReset.addEventListener('click', () => setAccent(''));
+    const customCss = $('#customCss');
+    if (customCss) {
+      customCss.value = state.settings.customCss || '';
+      customCss.addEventListener('input', debounce((e) => setCustomCss(e.target.value), 400));
+    }
+
+    // Compress images toggle
+    const compressToggle = $('#compressToggle');
+    if (compressToggle) {
+      compressToggle.checked = state.settings.compressImages !== false;
+      compressToggle.addEventListener('change', (e) => { state.settings.compressImages = e.target.checked; save(); });
+    }
+
+    // Sync (update system)
+    const syncRepo = $('#syncRepo');
+    if (syncRepo) {
+      syncRepo.value = state.settings.sync.repo || '';
+      syncRepo.addEventListener('input', debounce((e) => { state.settings.sync.repo = e.target.value.trim(); save(); }, 300));
+    }
+    const syncBranch = $('#syncBranch');
+    if (syncBranch) {
+      syncBranch.value = state.settings.sync.branch || 'main';
+      syncBranch.addEventListener('input', debounce((e) => { state.settings.sync.branch = e.target.value.trim() || 'main'; save(); }, 300));
+    }
+    const syncPath = $('#syncPath');
+    if (syncPath) {
+      syncPath.value = state.settings.sync.path || 'lumen-data.json';
+      syncPath.addEventListener('input', debounce((e) => { state.settings.sync.path = e.target.value.trim() || 'lumen-data.json'; save(); }, 300));
+    }
+    const syncToken = $('#syncToken');
+    if (syncToken) {
+      syncToken.value = state.settings.sync.token || '';
+      syncToken.addEventListener('input', debounce((e) => { state.settings.sync.token = e.target.value.trim(); save(); }, 300));
+    }
+    const syncAuto = $('#syncAuto');
+    if (syncAuto) {
+      syncAuto.checked = !!state.settings.sync.auto;
+      syncAuto.addEventListener('change', (e) => { state.settings.sync.auto = e.target.checked; save(); });
+    }
+    const syncCheckBtn = $('#syncCheckBtn');
+    if (syncCheckBtn) syncCheckBtn.addEventListener('click', () => checkForUpdates(true));
+
+    // AI settings
+    const aiEndpoint = $('#aiEndpoint');
+    if (aiEndpoint) {
+      aiEndpoint.value = state.settings.ai.endpoint || '';
+      aiEndpoint.addEventListener('input', debounce((e) => { state.settings.ai.endpoint = e.target.value.trim(); save(); }, 300));
+    }
+    const aiModel = $('#aiModel');
+    if (aiModel) {
+      aiModel.value = state.settings.ai.model || '';
+      aiModel.addEventListener('input', debounce((e) => { state.settings.ai.model = e.target.value.trim(); save(); }, 300));
+    }
+    const aiKey = $('#aiKey');
+    if (aiKey) {
+      aiKey.value = state.settings.ai.key || '';
+      aiKey.addEventListener('input', debounce((e) => { state.settings.ai.key = e.target.value.trim(); save(); }, 300));
+    }
+
+    // Online / offline indicator
+    updateNetStatus();
+    window.addEventListener('online', updateNetStatus);
+    window.addEventListener('offline', updateNetStatus);
+
+    // Storage stats
+    updateStorageStats();
+
+    // Auto-check for updates (silent — just notifies)
+    if (state.settings.sync && state.settings.sync.auto && state.settings.sync.repo && navigator.onLine) {
+      setTimeout(() => checkForUpdates(false), 1500);
+    }
 
     // Search
     $('#searchInput').addEventListener('input', debounce((e) => renderSearch(e.target.value), 150));
@@ -4188,9 +5678,14 @@ const Lumen = (() => {
       if (e.key === 'Enter') { e.preventDefault(); if (items[cmdActiveIndex]) items[cmdActiveIndex].click(); }
     });
     $('#cmdOverlay').addEventListener('click', (e) => { if (e.target.id === 'cmdOverlay') closeCmd(); });
+    // Visible close buttons (Esc already worked — now there's a button too)
+    const closeCmdBtn = $('#closeCmdBtn');
+    if (closeCmdBtn) closeCmdBtn.addEventListener('click', closeCmd);
 
     // Image zoom close
     $('#zoomOverlay').addEventListener('click', () => $('#zoomOverlay').classList.remove('open'));
+    const zoomCloseBtn = $('#zoomClose');
+    if (zoomCloseBtn) zoomCloseBtn.addEventListener('click', (e) => { e.stopPropagation(); $('#zoomOverlay').classList.remove('open'); });
 
     // Back to top
     $('#content').addEventListener('scroll', debounce(() => {
@@ -4230,10 +5725,16 @@ const Lumen = (() => {
   }
 
   function updateSearchActive() {
-    $$('.search-result').forEach((el, i) => el.classList.toggle('active', i === searchActiveIndex));
+    const els = $$('.search-result');
+    els.forEach((el, i) => el.classList.toggle('active', i === searchActiveIndex));
+    // Keep the keyboard-selected result in view (fixes "arrow down scrolls out of sight")
+    if (els[searchActiveIndex]) els[searchActiveIndex].scrollIntoView({ block: 'nearest' });
   }
   function updateCmdActive() {
-    $$('.cmd-item').forEach((el, i) => el.classList.toggle('active', i === cmdActiveIndex));
+    const els = $$('.cmd-item');
+    els.forEach((el, i) => el.classList.toggle('active', i === cmdActiveIndex));
+    // Keep the keyboard-selected command in view (fixes "arrow down scrolls out of sight")
+    if (els[cmdActiveIndex]) els[cmdActiveIndex].scrollIntoView({ block: 'nearest' });
   }
 
   // Public API
@@ -4242,17 +5743,23 @@ const Lumen = (() => {
     go,
     goNext,
     goPrev,
+    goBack,
     setTheme,
     setDir,
     setFont,
+    setAccent,
+    setCustomCss,
+    toggleViewMode,
     openEditor,
     openGrid,
     openNewDocModal,
+    openVersions,
     exportMarkdown,
     exportSingleHTML,
     exportJSON,
     deletePage,
     toggleBookmark,
+    checkForUpdates,
     scrollToAnchor,
     toast,
     sliderGo,
@@ -4271,7 +5778,7 @@ window.__LUMEN_DEFAULT_PAGES__ = [
   {
     "id": "cover",
     "title": "Lumen",
-    "subtitle": "A single-file static documentation engine · v1.0",
+    "subtitle": "A single-file static documentation engine · v1.1",
     "section": "Start",
     "icon": "✦",
     "tags": [
@@ -4292,6 +5799,18 @@ window.__LUMEN_DEFAULT_PAGES__ = [
     ],
     "dir": "ltr",
     "content": "# Welcome to Lumen\n\nLumen is built on a simple thesis: documentation should travel as easily as a single file, run anywhere a browser runs, and feel as polished as a hosted product.\n\n## What is inside\n\n- **A markdown engine** with code highlighting, math (KaTeX), and Mermaid diagrams\n- **Custom extensions**: callouts, cards, badges, key bindings, collapsible details\n- **Full RTL support** — switch the entire UI to Persian or Arabic with one click\n- **Five themes**: Midnight, Glass, Daylight, Sepia, Terminal\n- **Instant search & command palette** for navigation by muscle memory\n- **An in-place editor** to write and edit pages directly inside the document\n- **Export to .md + assets** — generate a downloadable zip with one click\n- **Bookmarks, history, reading progress** — all stored locally, all private\n\n## What Lumen is not\n\n- It is **not** a wiki. There is no multi-user editing, no revision history beyond your browser.\n- It is **not** a publishing platform. There is no hosting, no RSS, no analytics.\n- It is **not** a static site generator. There is no build pipeline.\n\nLumen is a **single-document workshop**. You write, you read, you export. If you need a wiki, use one. If you need a publishing platform, use one. If you need to ship a beautiful, self-contained piece of documentation in one file, use Lumen.\n\n## How to use it\n\n1. **Browse** the default documentation using the sidebar or keyboard.\n2. **Edit any page** by pressing [kbd:E] — the editor opens with the current page.\n3. **Create new pages** with the same editor; they appear in the sidebar under \"Custom\".\n4. **Export** with the download icon in the top bar. You get a zip of `.md` files.\n5. **Import** by dragging `.md` files onto the window, or via the settings panel.\n\n:::info\nThe demo content you are reading right now is itself just an array of page objects. Open the editor on this page to see the raw markdown.\n:::\n\n## A note on performance\n\nLumen is built to feel instant. Search is indexed at startup. Routing is hash-based — no network round-trips. Rendering happens in a single pass per page. The whole engine fits in about 1,500 lines of JavaScript and weighs roughly 80 kilobytes before the CDN libraries load.\n\nThe Performance page breaks down the techniques used to keep it that way.\n"
+  },
+  {
+    "id": "whats-new",
+    "title": "What's New in v1.1",
+    "subtitle": "Uploads that don't break, offline mode, version history, sync, and much more",
+    "section": "Start",
+    "icon": "🆕",
+    "tags": [
+      "changelog"
+    ],
+    "dir": "ltr",
+    "content": "# What's New in v1.1\n\nv1.1 is the \"make it just work\" release: every bug from the v1.0 notes is fixed, the biggest wishes are built, and the file is now assembled from clean source parts.\n\n## Fixed\n\n- **Uploads no longer blow up storage.** Media files now live in IndexedDB (hundreds of MB) instead of localStorage (~5MB), and big images are automatically downscaled on upload. Old documents migrate automatically.\n- **⌘K arrow keys keep the selection in sight.** The palette (and search) now scroll the highlighted item into view instead of letting it leave the screen.\n- **Overlays have visible close buttons.** The command palette, search dropdown, and image zoom all show a ✕ now — no more hunting for the shortcut.\n- **Mermaid diagrams follow your theme** (light themes get light diagrams).\n- A stack of small ones: duplicate heading anchors, TOC listener leak, density toggle not resetting, `\"` in titles breaking attributes, imports leaving you on a stale page, exports corrupted by literal `<\/script>` in content.\n\n## New\n\n:::card-grid\n:::card 🔒 Viewer mode\nPress [kbd:V] to hide every editing control — perfect for handing the file to readers. They keep themes, search, and export; the editor disappears.\n:::\n:::card ⏱ Version history\nSnapshots are taken automatically before every destructive action (delete, import, reset, remote update). Press [kbd:H] to browse and restore.\n:::\n:::card ⬇ Update & Sync\nPoint Lumen at a GitHub repo (Settings → Update & Sync) and pull updated documentation straight into the browser — with an optional token for private repos.\n:::\n:::card ⬡ Flowcharts\nFour shapes, four directions, auto-organized. See [Custom Extensions](page://custom-extensions).\n:::\n:::card 📷 Walkthroughs\nClickable screenshot tours — show an app in work using only images.\n:::\n:::card 🌐 Offline mode\nCDN libraries are cached on first visit; after that the file works with no network at all. The status bar shows Online/Offline.\n:::\n:::\n\nAlso new: **accent color + custom CSS** in Settings, an optional **AI assist** (bring your own OpenAI-compatible endpoint — improve, fix, summarize, translate to/from Persian), **Alt+←** to go back, and new pages land in your face after saving instead of hiding in the sidebar.\n\n## For developers\n\nThe single file is now *built* from `src/` parts — styles, body, engine, and content live in separate files and `./build.sh` glues them together. Fork-friendly, diff-friendly, still one file to ship.\n\n```bash\ngit clone https://github.com/mehmannavaz/LumenDocumentation\ncd LumenDocumentation\n./build.sh          # produces Lumen_documentation.html\n```\n\n:::tip\nEverything is still one HTML file. `build.sh` just makes editing it humane.\n:::\n"
   },
   {
     "id": "theory-single-file",
@@ -4343,7 +5862,7 @@ window.__LUMEN_DEFAULT_PAGES__ = [
       "extensions"
     ],
     "dir": "ltr",
-    "content": "# Custom Extensions\n\nLumen extends markdown with a handful of syntaxes that make documentation richer without breaking compatibility with standard markdown parsers.\n\n## Callouts\n\nFive callout types are available:\n\n:::tip\n**Tip** — for helpful suggestions. Use sparingly to highlight a better way of doing something.\n:::\n\n:::info\n**Note** — for context the reader should know but does not need to act on.\n:::\n\n:::warning\n**Warning** — for things that will surprise the reader, like a footgun or a breaking change.\n:::\n\n:::danger\n**Important** — for things that will cause data loss or security issues if ignored.\n:::\n\n:::quote\n**Quote** — for pulling a passage out of the body text.\n:::\n\n### Syntax\n\n```markdown\n:::tip\nThis is a tip callout.\n:::\n\n:::warning\nThis is a warning.\n:::\n```\n\n## Cards\n\nFor side-by-side feature comparisons:\n\n:::card-grid\n:::card ⚡ Fast\nIndexed search, hash routing, single-pass rendering. The engine is 80KB and loads in under 200ms on a modern connection.\n:::\n:::card 🎨 Beautiful\nFive themes, careful typography, gold accent, glassmorphism option. Every element has been hand-tuned.\n:::\n:::card 🌐 Bilingual\nFull RTL support. Switch the entire interface to Persian or Arabic with one click. Per-page direction preserved.\n:::\n:::card 📦 Portable\nOne HTML file. No build step. No server. Email it, commit it, open it from a USB stick.\n:::\n:::\n\n### Syntax\n\n```markdown\n:::card-grid\n:::card Card Title\nCard body content. Supports **markdown**.\n:::\n:::card Another Card\nAnother body.\n:::\n:::\n```\n\n## Badges\n\nInline badges for status indicators:\n\n- [badge:success:Stable] — for stable features\n- [badge:info:New] — for recently added features\n- [badge:warning:Beta] — for experimental features\n- [badge:danger:Deprecated] — for features being removed\n- [badge:neutral:Optional] — for optional features\n\n### Syntax\n\n```markdown\n[badge:success:Stable] [badge:info:New] [badge:danger:Deprecated]\n```\n\n## Key bindings\n\nInline keyboard shortcuts render as actual `<kbd>` elements:\n\n- Press [kbd:⌘K] to open the command palette\n- Press [kbd:⌘S] to save in the editor\n- Press [kbd:Ctrl+Shift+P] for the format command (in some editors)\n\n### Syntax\n\n```markdown\nPress [kbd:⌘K] to open the command palette.\nUse [kbd:Ctrl+Shift+P] for the format command.\n```\n\n## Collapsible details\n\nStandard HTML `<details>` works in markdown:\n\n<details>\n<summary>Click to expand: implementation notes</summary>\n\nThe details element uses native browser behavior with custom styling. The marker is replaced with a rotating arrow.\n\nYou can put any markdown inside, including code:\n\n```js\nfunction example() {\n  return \"hidden until expanded\";\n}\n```\n\n</details>\n\n<details>\n<summary>Click to expand: another section</summary>\n\nMultiple details elements can coexist on the same page. Each opens and closes independently.\n\n</details>\n\n## Internal links\n\nUse `page://page-id` to link to another Lumen page:\n\n```markdown\n[See the architecture](page://architecture)\n[Read the manifesto](page://manifesto)\n```\n\nThese render as clickable links that navigate without a page reload.\n\n## External links\n\nExternal links (starting with `http://` or `https://`) get:\n\n- `target=\"_blank\"` — open in a new tab\n- `rel=\"noopener\"` — security best practice\n- A subtle `↗` indicator\n\nExample: [Lumen on GitHub Pages](https://example.com) (this is a dummy link).\n\n## Anchors\n\nEvery heading gets an auto-generated ID based on its text. Click any heading in the on-page TOC (right sidebar) to jump to it. The URL hash updates to `#page-id,heading-id`, so you can share deep links.\n\n## Putting it all together\n\nA typical documentation page combines several extensions:\n\n```markdown\n# Setting up the build\n\n:::warning\nThis step requires Node 18 or later.\n:::\n\n1. Install dependencies:\n\n   \\`\\`\\`bash\n   npm install\n   \\`\\`\\`\n\n2. Run the dev server:\n\n   \\`\\`\\`bash\n   npm run dev\n   \\`\\`\\`\n\n:::tip\nPress [kbd:⌘K] then type \"build\" to find the build docs quickly.\n:::\n```\n\nThe extensions are designed to be optional — they degrade to plain text if the engine is not available. You can read the same markdown in any other markdown viewer and it will make sense.\n"
+    "content": "# Custom Extensions\n\nLumen extends markdown with a handful of syntaxes that make documentation richer without breaking compatibility with standard markdown parsers.\n\n## Callouts\n\nFive callout types are available:\n\n:::tip\n**Tip** — for helpful suggestions. Use sparingly to highlight a better way of doing something.\n:::\n\n:::info\n**Note** — for context the reader should know but does not need to act on.\n:::\n\n:::warning\n**Warning** — for things that will surprise the reader, like a footgun or a breaking change.\n:::\n\n:::danger\n**Important** — for things that will cause data loss or security issues if ignored.\n:::\n\n:::quote\n**Quote** — for pulling a passage out of the body text.\n:::\n\n### Syntax\n\n```markdown\n:::tip\nThis is a tip callout.\n:::\n\n:::warning\nThis is a warning.\n:::\n```\n\n## Cards\n\nFor side-by-side feature comparisons:\n\n:::card-grid\n:::card ⚡ Fast\nIndexed search, hash routing, single-pass rendering. The engine is 80KB and loads in under 200ms on a modern connection.\n:::\n:::card 🎨 Beautiful\nFive themes, careful typography, gold accent, glassmorphism option. Every element has been hand-tuned.\n:::\n:::card 🌐 Bilingual\nFull RTL support. Switch the entire interface to Persian or Arabic with one click. Per-page direction preserved.\n:::\n:::card 📦 Portable\nOne HTML file. No build step. No server. Email it, commit it, open it from a USB stick.\n:::\n:::\n\n### Syntax\n\n```markdown\n:::card-grid\n:::card Card Title\nCard body content. Supports **markdown**.\n:::\n:::card Another Card\nAnother body.\n:::\n:::\n```\n\n## Badges\n\nInline badges for status indicators:\n\n- [badge:success:Stable] — for stable features\n- [badge:info:New] — for recently added features\n- [badge:warning:Beta] — for experimental features\n- [badge:danger:Deprecated] — for features being removed\n- [badge:neutral:Optional] — for optional features\n\n### Syntax\n\n```markdown\n[badge:success:Stable] [badge:info:New] [badge:danger:Deprecated]\n```\n\n## Key bindings\n\nInline keyboard shortcuts render as actual `<kbd>` elements:\n\n- Press [kbd:⌘K] to open the command palette\n- Press [kbd:⌘S] to save in the editor\n- Press [kbd:Ctrl+Shift+P] for the format command (in some editors)\n\n### Syntax\n\n```markdown\nPress [kbd:⌘K] to open the command palette.\nUse [kbd:Ctrl+Shift+P] for the format command.\n```\n\n## Collapsible details\n\nStandard HTML `<details>` works in markdown:\n\n<details>\n<summary>Click to expand: implementation notes</summary>\n\nThe details element uses native browser behavior with custom styling. The marker is replaced with a rotating arrow.\n\nYou can put any markdown inside, including code:\n\n```js\nfunction example() {\n  return \"hidden until expanded\";\n}\n```\n\n</details>\n\n<details>\n<summary>Click to expand: another section</summary>\n\nMultiple details elements can coexist on the same page. Each opens and closes independently.\n\n</details>\n\n## Internal links\n\nUse `page://page-id` to link to another Lumen page:\n\n```markdown\n[See the architecture](page://architecture)\n[Read the manifesto](page://manifesto)\n```\n\nThese render as clickable links that navigate without a page reload.\n\n## External links\n\nExternal links (starting with `http://` or `https://`) get:\n\n- `target=\"_blank\"` — open in a new tab\n- `rel=\"noopener\"` — security best practice\n- A subtle `↗` indicator\n\nExample: [Lumen on GitHub Pages](https://example.com) (this is a dummy link).\n\n## Anchors\n\nEvery heading gets an auto-generated ID based on its text. Click any heading in the on-page TOC (right sidebar) to jump to it. The URL hash updates to `#page-id,heading-id`, so you can share deep links.\n\n## Flowcharts — :::flow\n\nFour shapes, four directions, auto-organized. Draw a diagram with plain text:\n\n:::flow\nSTART[Start]\nREADY{Config loaded?}\nLOAD<Load settings>\nRUN(Run build)\nDONE[Done]\nSTART > READY\nREADY v LOAD | no\nREADY > RUN | yes\nLOAD ^ RUN\nRUN > DONE\n:::\n\n### Syntax\n\n```markdown\n:::flow\nA[Square]          B(Circle)\nC{Diamond}         D<Hexagon>\nA > B              B > C | edge label\nC v D              D ^ A\n:::\n```\n\n- **Shapes**: `[Square]`, `(Circle)`, `{Diamond}`, `<Hexagon>`\n- **Directions**: `A > B` places B **right** of A. `A < B` left, `A ^ B` above, `A v B` below. `->` is an alias for `>`.\n- **Edge labels**: `A > B | yes`\n- The engine auto-organizes the layout from your directions — no coordinates, ever.\n\n## Interactive walkthroughs — :::tour\n\nShow an app *in work* using only screenshots. Each step is an image; hotspots are clickable circles that jump to another step — the reader \"clicks through\" your UI without the real app:\n\n:::tour\n![Step 1 — click the lock icon in the top bar](https://picsum.photos/800/450?random=50) 88%,12% -> 2\n![Step 2 — viewer mode hides every editing control](https://picsum.photos/800/450?random=51)\n:::\n\n### Syntax\n\n```markdown\n:::tour\n![Step 1 — click the gear icon](image1.png) 88%,12% -> 2\n![Step 2 — the settings panel](image2.png) 15%,55% -> 3 | 90%,20% -> 1\n![Step 3 — done](image3.png)\n:::\n```\n\nEach `x%,y% -> N` adds a hotspot at that position (percent of image size) that jumps to step `N`. The `%` signs are optional. Drop screenshots into the editor to embed them, then add hotspots.\n\n## Embeds — :::embed\n\nInclude an external page (video, form, interactive demo) in a sandboxed frame:\n\n:::embed\nhttps://www.youtube.com/embed/aqz-KE-bpKQ\n:::\n\n### Syntax\n\n```markdown\n:::embed\nhttps://www.example.com/embed\n:::\n```\n\nOnly `https://` URLs are allowed.\n\n## Putting it all together\n\nA typical documentation page combines several extensions:\n\n```markdown\n# Setting up the build\n\n:::warning\nThis step requires Node 18 or later.\n:::\n\n1. Install dependencies:\n\n   \\`\\`\\`bash\n   npm install\n   \\`\\`\\`\n\n2. Run the dev server:\n\n   \\`\\`\\`bash\n   npm run dev\n   \\`\\`\\`\n\n:::tip\nPress [kbd:⌘K] then type \"build\" to find the build docs quickly.\n:::\n```\n\nThe extensions are designed to be optional — they degrade to plain text if the engine is not available. You can read the same markdown in any other markdown viewer and it will make sense.\n"
   },
   {
     "id": "rtl-bidirectional",
@@ -4383,7 +5902,7 @@ window.__LUMEN_DEFAULT_PAGES__ = [
       "shortcuts"
     ],
     "dir": "ltr",
-    "content": "# Keyboard Shortcuts\n\nLumen is designed to be drivable from the keyboard. Once you internalize these, you will navigate faster than with a mouse.\n\n## Navigation\n\n| Action | Shortcut |\n|--------|----------|\n| Open command palette | [kbd:⌘K] / [kbd:Ctrl+K] |\n| Focus search | [kbd:/] |\n| Previous page | [kbd:j] |\n| Next page | [kbd:k] |\n| Scroll down | [kbd:↓] |\n| Scroll up | [kbd:↑] |\n| Back to top | (use scroll, or click the floating arrow) |\n| Open outline grid | [kbd:g] |\n\n## View\n\n| Action | Shortcut |\n|--------|----------|\n| Cycle theme | [kbd:t] |\n| Toggle sidebar | [kbd:s] |\n| Toggle on-page TOC | [kbd:o] |\n| Toggle reading mode | [kbd:r] |\n| Bookmark current page | [kbd:b] |\n\n## Editing\n\n| Action | Shortcut |\n|--------|----------|\n| Open editor (new page) | [kbd:e] |\n| Save in editor | [kbd:⌘S] / [kbd:Ctrl+S] |\n| Close any overlay | [kbd:Esc] |\n\n## System\n\n| Action | Shortcut |\n|--------|----------|\n| Print / Save as PDF | [kbd:p] |\n| Open command palette (help) | [kbd:?] |\n\n## Command palette\n\nThe command palette ([kbd:⌘K]) is the swiss-army knife. From it you can:\n\n- Jump to any page by typing its title\n- Run any command (toggle theme, open editor, export, etc.)\n- See recently-visited pages\n\nType to filter. Use [kbd:↑] / [kbd:↓] to navigate results. Press [kbd:Enter] to run.\n\n:::tip\nIf you forget a shortcut, press [kbd:?] — it opens the command palette, which lists all commands with their shortcuts.\n:::\n\n## When you are in an input\n\nShortcuts that conflict with text entry (like [kbd:/], [kbd:j], [kbd:k]) are disabled while focused in the search box, the editor textarea, or any other input. Press [kbd:Esc] to blur the input and re-enable them.\n\n## Why keyboard-first\n\nDocumentation is read, not interacted with. A reader who is moving through pages should not need to leave the keyboard to reach for a mouse. The [kbd:j] / [kbd:k] convention (borrowed from Vim and many docs sites) lets you flip pages without breaking your reading flow.\n\nThe command palette exists for the moments when you do not remember the shortcut. It is a fallback, not the primary interface.\n"
+    "content": "# Keyboard Shortcuts\n\nLumen is designed to be drivable from the keyboard. Once you internalize these, you will navigate faster than with a mouse.\n\n## Navigation\n\n| Action | Shortcut |\n|--------|----------|\n| Open command palette | [kbd:⌘K] / [kbd:Ctrl+K] |\n| Focus search | [kbd:/] |\n| Previous page | [kbd:j] |\n| Next page | [kbd:k] |\n| Back (visit history) | [kbd:Alt+←] |\n| Scroll down | [kbd:↓] |\n| Scroll up | [kbd:↑] |\n| Back to top | (use scroll, or click the floating arrow) |\n| Open outline grid | [kbd:g] |\n\n## View\n\n| Action | Shortcut |\n|--------|----------|\n| Cycle theme | [kbd:t] |\n| Toggle sidebar | [kbd:s] |\n| Toggle on-page TOC | [kbd:o] |\n| Toggle reading mode | [kbd:r] |\n| Toggle viewer mode | [kbd:v] |\n| Bookmark current page | [kbd:b] |\n| Version history | [kbd:h] |\n\n## Editing\n\n| Action | Shortcut |\n|--------|----------|\n| Open editor (new page) | [kbd:e] |\n| Save in editor | [kbd:⌘S] / [kbd:Ctrl+S] |\n| Close any overlay | [kbd:Esc] |\n\n## System\n\n| Action | Shortcut |\n|--------|----------|\n| Print / Save as PDF | [kbd:p] |\n| Open command palette (help) | [kbd:?] |\n\n## Command palette\n\nThe command palette ([kbd:⌘K]) is the swiss-army knife. From it you can:\n\n- Jump to any page by typing its title\n- Run any command (toggle theme, open editor, export, etc.)\n- See recently-visited pages\n\nType to filter. Use [kbd:↑] / [kbd:↓] to navigate results. Press [kbd:Enter] to run.\n\n:::tip\nIf you forget a shortcut, press [kbd:?] — it opens the command palette, which lists all commands with their shortcuts.\n:::\n\n## When you are in an input\n\nShortcuts that conflict with text entry (like [kbd:/], [kbd:j], [kbd:k]) are disabled while focused in the search box, the editor textarea, or any other input. Press [kbd:Esc] to blur the input and re-enable them.\n\n## Why keyboard-first\n\nDocumentation is read, not interacted with. A reader who is moving through pages should not need to leave the keyboard to reach for a mouse. The [kbd:j] / [kbd:k] convention (borrowed from Vim and many docs sites) lets you flip pages without breaking your reading flow.\n\nThe command palette exists for the moments when you do not remember the shortcut. It is a fallback, not the primary interface.\n"
   },
   {
     "id": "search-command-palette",
@@ -4515,24 +6034,21 @@ window.__LUMEN_DEFAULT_PAGES__ = [
       "colophon"
     ],
     "dir": "ltr",
-    "content": "# Colophon\n\nThis documentation was built with Lumen v1.0. The pages you have been reading are themselves the demonstration.\n\n## Tools\n\n- **Engine**: Lumen v1.0 — a single-file static documentation engine\n- **Markdown parser**: marked.js\n- **HTML sanitizer**: DOMPurify\n- **Syntax highlighting**: highlight.js (Atom One Dark theme)\n- **Math rendering**: KaTeX\n- **Diagrams**: Mermaid\n- **API explorer**: Built-in OpenAPI/Swagger renderer (try-it-out, auth, cURL)\n- **YAML parsing**: js-yaml (for Swagger YAML specs)\n- **Zip export**: JSZip\n- **Fonts**: Vazirmatn (Persian/Latin), Inter (Latin), JetBrains Mono (code), Lora (Sepia theme)\n\n## Design\n\n- **Accent color**: `#d4af7f` — warm gold\n- **Background**: `#0e0e12` (Midnight theme)\n- **Type scale**: 1.250 (major third) — `1rem`, `1.25rem`, `1.5625rem`, `1.9531rem`, `2.4414rem`\n- **Layout**: three-column grid (sidebar, content, TOC) with collapsing states\n- **Motion**: 0.32s cubic-bezier easing throughout\n\n## Principles applied\n\n- Single-file (no build step, no server)\n- Logical CSS properties (for RTL mirroring)\n- Vanilla JS (no framework)\n- Local-first (state in localStorage)\n- Five themes on one token system\n- Substantive content (each page is real prose, not lorem ipsum)\n\n## Reading time\n\nThe default documentation is roughly 9,000 words across 18 pages — about 40 minutes of reading. The engine itself is about 1,500 lines of JavaScript, 1,200 lines of CSS, and 200 lines of HTML.\n\n## Credits\n\nLumen was designed and built as a demonstration of how much can fit in a single HTML file. The aesthetic language is inspired by:\n\n- The v2.1 presentation system (the predecessor that inspired this project)\n- Editorial print design (specifically book typography)\n- Modern code editors (Atom, VS Code)\n- Apple's Human Interface Guidelines (for the command palette and settings UI)\n\n## Fork it\n\nThis file is meant to be forked. Open it in a text editor, change the colors, add your own pages, ship it as your documentation. The engine is small enough to read in an afternoon and modify in a weekend.\n\n:::tip\nPress [kbd:E] to open the editor on this page and see the raw markdown. Press [kbd:⌘K] to navigate anywhere. Press [kbd:⬇] (the download icon) to export this whole documentation as a zip of markdown files.\n:::\n\nThank you for reading.\n"
+    "content": "# Colophon\n\nThis documentation was built with Lumen v1.1. The pages you have been reading are themselves the demonstration.\n\n## Tools\n\n- **Engine**: Lumen v1.1 — a single-file static documentation engine\n- **Storage**: localStorage (docs) + IndexedDB (media, offline library cache)\n- **Markdown parser**: marked.js\n- **HTML sanitizer**: DOMPurify\n- **Syntax highlighting**: highlight.js (Atom One Dark theme)\n- **Math rendering**: KaTeX\n- **Diagrams**: Mermaid\n- **API explorer**: Built-in OpenAPI/Swagger renderer (try-it-out, auth, cURL)\n- **YAML parsing**: js-yaml (for Swagger YAML specs)\n- **Zip export**: JSZip\n- **Fonts**: Vazirmatn (Persian/Latin), Inter (Latin), JetBrains Mono (code), Lora (Sepia theme)\n\n## Design\n\n- **Accent color**: `#d4af7f` — warm gold\n- **Background**: `#0e0e12` (Midnight theme)\n- **Type scale**: 1.250 (major third) — `1rem`, `1.25rem`, `1.5625rem`, `1.9531rem`, `2.4414rem`\n- **Layout**: three-column grid (sidebar, content, TOC) with collapsing states\n- **Motion**: 0.32s cubic-bezier easing throughout\n\n## Principles applied\n\n- Single-file (no build step, no server)\n- Logical CSS properties (for RTL mirroring)\n- Vanilla JS (no framework)\n- Local-first (state in localStorage)\n- Five themes on one token system\n- Substantive content (each page is real prose, not lorem ipsum)\n\n## Reading time\n\nThe default documentation is roughly 9,500 words across 19 pages — about 45 minutes of reading. The engine itself is about 2,000 lines of JavaScript and 1,700 lines of CSS, built from the `src/` parts by `build.sh`.\n\n## Credits\n\nLumen was designed and built as a demonstration of how much can fit in a single HTML file. The aesthetic language is inspired by:\n\n- The v2.1 presentation system (the predecessor that inspired this project)\n- Editorial print design (specifically book typography)\n- Modern code editors (Atom, VS Code)\n- Apple's Human Interface Guidelines (for the command palette and settings UI)\n\n## Fork it\n\nThis file is meant to be forked. Open it in a text editor, change the colors, add your own pages, ship it as your documentation. The engine is small enough to read in an afternoon and modify in a weekend.\n\n:::tip\nPress [kbd:E] to open the editor on this page and see the raw markdown. Press [kbd:⌘K] to navigate anywhere. Press [kbd:⬇] (the download icon) to export this whole documentation as a zip of markdown files.\n:::\n\nThank you for reading.\n"
   }
 ];
 </script>
 
-
-
-
-
-
-
-
-
-
 <script>
-// Final init once everything is loaded
-window.addEventListener('DOMContentLoaded', () => {
-  if (typeof Lumen !== 'undefined') Lumen.init();
+// Final init once everything is loaded.
+// Waits for the CDN libraries (or their offline cache fallback) before booting the engine.
+window.addEventListener('DOMContentLoaded', async () => {
+  try {
+    if (window.LumenLibs && window.LumenLibs.ready) await window.LumenLibs.ready;
+  } catch (e) { /* continue — engine degrades gracefully */ }
+  if (typeof Lumen !== 'undefined') {
+    try { await Lumen.init(); } catch (e) { console.error('Lumen init failed:', e); }
+  }
 });
 </script>
 

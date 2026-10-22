@@ -1,0 +1,15 @@
+<script>
+// Final init once everything is loaded.
+// Waits for the CDN libraries (or their offline cache fallback) before booting the engine.
+window.addEventListener('DOMContentLoaded', async () => {
+  try {
+    if (window.LumenLibs && window.LumenLibs.ready) await window.LumenLibs.ready;
+  } catch (e) { /* continue — engine degrades gracefully */ }
+  if (typeof Lumen !== 'undefined') {
+    try { await Lumen.init(); } catch (e) { console.error('Lumen init failed:', e); }
+  }
+});
+</script>
+
+</body>
+</html>
