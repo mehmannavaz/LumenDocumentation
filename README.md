@@ -15,7 +15,7 @@
 - **Custom blocks** — callouts, cards, badges, sliders, tabs, API explorer (`:::swagger`)
 - **Flowcharts** — `:::flow` with 4 shapes (square / circle / diamond / hexagon), 4 directions (`> < ^ v`), edge labels, and auto-organizing layout
 - **Clickable walkthroughs** — `:::tour` turns screenshots into an interactive demo: readers click hotspots to move between steps (show an app *in work* using only images)
-- **Embeds** — `:::embed` for sandboxed external pages and videos
+- **Embeds** — `:::embed` for sandboxed external pages and videos; **drop a `.html` file into the editor to embed it as a live page** (with open / save actions) that survives export
 - **RTL & Persian** — full right-to-left UI with per-page direction detection
 - **5 themes** + accent color picker + custom CSS (Settings → Customization)
 - **Instant search & command palette** (⌘K)
@@ -24,6 +24,7 @@
 - **Update & Sync** — pull updated docs from a GitHub repo (optional token for private repos), saved locally
 - **Offline mode** — CDN libraries are cached on first visit; after that the file works with no network
 - **Smart uploads** — media lives in IndexedDB (big!), large images auto-compress, old data migrates automatically
+- **Real saving** — **Ctrl+S** (or the 💾 top-bar button) downloads a fresh standalone copy from anywhere, even inside an exported file — works where the browser's own “save page” fails, so moving docs is moving one file
 - **Optional AI assist** — bring your own OpenAI-compatible endpoint (OpenAI, OpenRouter, Ollama…) to improve, fix, summarize, or translate selected text
 
 ## Keyboard map
@@ -31,7 +32,8 @@
 | Key | Action | Key | Action |
 |-----|--------|-----|--------|
 | ⌘K | Command palette | G | Outline grid |
-| / | Search | E | Edit / new page |
+| ⌘S / Ctrl+S | Save — download a working copy | E | Edit / new page |
+| / | Search | ? | Shortcut help |
 | J / K | Previous / next page | B | Bookmark |
 | T | Cycle theme | V | Viewer mode |
 | S / O | Sidebar / TOC | H | Version history |
@@ -82,11 +84,21 @@ The sweet spot is 10–100 pages of rich documentation: API references, design s
 - [x] ~~Version manager — treat documents like code~~ (snapshots + restore)
 - [x] ~~Screenshot engine reacting on clicks~~ (`:::tour` walkthroughs)
 - [x] ~~Flowchart with 4 directions / 4 shapes, auto-organized~~ (`:::flow`)
-- [x] ~~HTML extension inside pages~~ (raw HTML + `:::embed`)
+- [x] ~~HTML extension inside pages~~ (raw HTML + `:::embed`, dropped `.html` files embed as live pages)
 - [x] ~~Better customization~~ (accent color, custom CSS, themes)
 - [x] ~~Separate the HTML into parts with a build script~~ (`src/` + `build.sh`)
 - [x] ~~Quick AI feature~~ (optional, bring-your-own-endpoint)
+- [ ] **Color palette selection** — curated palette presets (bg / text / accent / borders as one set) beyond the single accent color
+- [ ] **Better flow system** — redesigned flow experience on top of `:::flow` (spec in progress)
+- [ ] **AI-ready empty document** — a structured, placeholder-marked starter doc an AI assistant can fill in one pass
 - [ ] Multi-language UI + automatic translation of pages (partial: AI translate action exists; full i18n still open)
+
+## Fixes in v1.2
+
+- Dropping a `.html` file into the editor embeds it as a **live sandboxed page** instead of a code block (↗ Open / ⬇ Save actions included; survives export)
+- **Ctrl+S outside the editor downloads a standalone copy** of the whole file — it used to be swallowed and do nothing
+- New 💾 **Save this file** button in the top bar (works in viewer mode and inside exported files — the reliable way to save where the browser's “save page” fails)
+- Export & Import page no longer claims standalone HTML is “not yet implemented”
 
 ## Fixes in v1.1
 

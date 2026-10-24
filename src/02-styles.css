@@ -1705,6 +1705,30 @@ body.view-mode #toggleViewMode { color: var(--accent); border-color: var(--accen
 }
 .embed-wrap iframe { width: 100%; height: 420px; border: none; display: block; }
 
+/* Local HTML file embeds (:::embed file://…) — live sandboxed preview
+   with an action bar (name · Open · Save) above the frame */
+.embed-local { padding: 0; }
+.embed-local-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; padding: 7px 12px;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border);
+}
+.embed-local-name {
+  font-size: 11px; font-family: 'JetBrains Mono', monospace;
+  color: var(--text-muted);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.embed-local-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.embed-local-btn {
+  font-size: 11px; padding: 3px 10px; border-radius: 6px;
+  border: 1px solid var(--border); background: var(--bg-input);
+  color: var(--text-body); cursor: pointer; white-space: nowrap;
+  transition: border-color .15s, color .15s;
+}
+.embed-local-btn:hover { border-color: var(--accent); color: var(--accent); }
+.embed-local iframe { width: 100%; height: 520px; border: none; display: block; background: #fff; }
+
 /* ============================================================
    VERSION HISTORY
    ============================================================ */

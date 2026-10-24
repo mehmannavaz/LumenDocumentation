@@ -34,7 +34,7 @@ const Lumen = (() => {
     doc: {
       name: 'Lumen',
       description: 'A single-file static documentation engine',
-      version: '1.1',
+      version: '1.2',
       author: '',
       icon: '✦',
     },
@@ -159,15 +159,20 @@ const Lumen = (() => {
   }
 
   function load() {
+    // localStorage can throw on opaque origins (blob: previews, sandboxed
+    // iframes) — read it separately so the EMBEDDED boot path (exported
+    // HTML files) still works when storage is blocked.
+    let data = {};
+    try { data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
+    catch (e) { data = {}; }
     try {
-      const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
       // If no saved pages, check for embedded doc meta (from an exported HTML)
       if (!data.pages || !data.pages.length) {
         if (window.__LUMEN_DOC_META__) Object.assign(state.doc, window.__LUMEN_DOC_META__);
         if (window.__LUMEN_DEFAULT_SETTINGS__) Object.assign(state.settings, window.__LUMEN_DEFAULT_SETTINGS__);
         if (window.__LUMEN_FILE_STORE__) {
           Object.assign(fileStore, window.__LUMEN_FILE_STORE__);
-          persistFileStore(); // move embedded files into IndexedDB
+          fileStoreHydration = persistFileStore(); // move embedded files into IndexedDB
         }
         state.pages = getDefaultDocs().slice();
       } else {
@@ -181,7 +186,7 @@ const Lumen = (() => {
       // move them to IndexedDB once, then strip them from the localStorage copy.
       if (data.fileStore && Object.keys(data.fileStore).length) {
         Object.assign(fileStore, data.fileStore);
-        persistFileStore().then(() => {
+        fileStoreHydration = persistFileStore().then(() => {
           try {
             const clean = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
             delete clean.fileStore;
@@ -189,16 +194,19 @@ const Lumen = (() => {
           } catch (e) { /* best-effort */ }
         });
       }
+    } catch (e) {
+      console.warn('Load failed, using defaults:', e);
+      state.pages = getDefaultDocs().slice();
+    }
+    // Settings load separately — blocked storage must not wipe them
+    try {
       const s = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}');
       // Deep-merge the nested setting groups so partial stored settings don't wipe defaults
       ['sync', 'ai'].forEach(k => {
         if (s[k] && typeof s[k] === 'object') s[k] = { ...state.settings[k], ...s[k] };
       });
       Object.assign(state.settings, s);
-    } catch (e) {
-      console.warn('Load failed, using defaults:', e);
-      state.pages = getDefaultDocs().slice();
-    }
+    } catch (e) { /* storage blocked — keep defaults / embedded settings */ }
   }
 
   // Write every in-memory file into IndexedDB (used on import / migration / embedded boot)
@@ -497,13 +505,37 @@ const Lumen = (() => {
       return `<div class="flow-chart" data-flow="${encodeURIComponent(body || '')}"><div class="tour-loading">Drawing flowchart…</div></div>`;
     });
 
-    // External embed: :::embed\nhttps://...\n:::  (sandboxed iframe)
+    // Embed: :::embed\nhttps://...\n:::            (external page, sandboxed iframe)
+    //        :::embed\nfile://ID\n:::              (dropped .html file — LIVE preview)
+    // Dropping a .html file into the editor writes the file:// form automatically.
     md = md.replace(/^:::embed[ \t]*\n([\s\S]*?)^:::[ \t]*$/gm, (m, body) => {
-      const url = (body || '').trim().split(/\s+/)[0];
-      if (!/^https:\/\//i.test(url)) {
-        return '<div class="swagger-error">Embed requires an https:// URL (e.g. a YouTube share link)</div>';
+      const first = (body || '').trim().split('\n')[0].trim();
+      // Local HTML file from the file store → live sandboxed page (srcdoc),
+      // with open-in-new-tab and download actions bound after render.
+      if (/^file:\/\//i.test(first)) {
+        const id = first.slice(7);
+        const rec = fileStore[id];
+        if (!rec || !rec.dataUrl) {
+          return '<div class="swagger-error">Embedded HTML file is not available — drop the .html file into the editor again.</div>';
+        }
+        const htmlText = decodeDataUrl(rec.dataUrl);
+        if (!htmlText) {
+          return '<div class="swagger-error">Could not read the embedded HTML file.</div>';
+        }
+        return `<div class="embed-wrap embed-local" data-embed-id="${escapeHtml(id)}">`
+          + `<div class="embed-local-bar">`
+          + `<span class="embed-local-name" title="${escapeHtml(rec.name)}">🌐 ${escapeHtml(rec.name)} · live page</span>`
+          + `<span class="embed-local-actions">`
+          + `<button type="button" class="embed-local-btn" data-embed-act="open" title="Open in a new tab">↗ Open</button>`
+          + `<button type="button" class="embed-local-btn" data-embed-act="download" title="Download this HTML file">⬇ Save</button>`
+          + `</span></div>`
+          + `<iframe srcdoc="${escapeHtml(htmlText)}" loading="lazy" sandbox="allow-scripts allow-popups allow-forms allow-modals" referrerpolicy="no-referrer"></iframe>`
+          + `</div>`;
       }
-      return `<div class="embed-wrap"><iframe src="${escapeHtml(url)}" loading="lazy" sandbox="allow-scripts allow-same-origin allow-popups allow-forms" referrerpolicy="no-referrer" allowfullscreen></iframe></div>`;
+      if (!/^https:\/\//i.test(first)) {
+        return '<div class="swagger-error">Embed needs an https:// URL — or drop a .html file into the editor to embed it as a live page.</div>';
+      }
+      return `<div class="embed-wrap"><iframe src="${escapeHtml(first)}" loading="lazy" sandbox="allow-scripts allow-same-origin allow-popups allow-forms" referrerpolicy="no-referrer" allowfullscreen></iframe></div>`;
     });
 
     // ---- STEP 3: math ----
@@ -577,7 +609,7 @@ const Lumen = (() => {
     html = resolveFileRefs(html);
     return window.DOMPurify ? DOMPurify.sanitize(html, {
       ADD_TAGS: ['div', 'span', 'audio', 'video', 'source', 'embed', 'figure', 'figcaption', 'iframe', 'details', 'summary'],
-      ADD_ATTR: ['class', 'data-page', 'data-code', 'data-spec', 'data-spec-url', 'data-endpoint', 'data-method', 'data-path', 'data-scheme', 'data-math-idx', 'data-display', 'data-tour', 'data-flow', 'data-slider', 'id', 'target', 'rel', 'aria-hidden', 'controls', 'src', 'type', 'width', 'height', 'style', 'sandbox', 'loading', 'allowfullscreen', 'referrerpolicy', 'open'],
+      ADD_ATTR: ['class', 'data-page', 'data-code', 'data-spec', 'data-spec-url', 'data-endpoint', 'data-method', 'data-path', 'data-scheme', 'data-math-idx', 'data-display', 'data-tour', 'data-flow', 'data-slider', 'data-embed-id', 'data-embed-act', 'id', 'target', 'rel', 'aria-hidden', 'controls', 'src', 'srcdoc', 'type', 'width', 'height', 'style', 'sandbox', 'loading', 'allowfullscreen', 'referrerpolicy', 'open'],
     }) : html;
   }
 
@@ -587,6 +619,7 @@ const Lumen = (() => {
   // At render time, resolveFileRefs() swaps them back to data URLs.
   const fileStore = {};  // { id: { name, type, dataUrl } }
   // (defined early so save()/load() can reference it)
+  let fileStoreHydration = null; // tracks persistFileStore() so init() can await it
 
   function resolveFileRefs(html) {
     // Replace file://ID in src="..." and href="..." attributes with the stored data URL
@@ -608,6 +641,24 @@ const Lumen = (() => {
     fileStore[id] = { name, type, dataUrl };
     FileDB.put(id, fileStore[id]); // async, fire-and-forget
     return id;
+  }
+
+  // Decode a stored data: URL back to plain text (used by local HTML embeds)
+  function decodeDataUrl(dataUrl) {
+    try {
+      const s = String(dataUrl || '');
+      const comma = s.indexOf(',');
+      if (comma < 0) return '';
+      const meta = s.slice(5, comma);
+      const payload = s.slice(comma + 1);
+      if (/;base64/i.test(meta)) {
+        const bin = atob(payload);
+        const bytes = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        return new TextDecoder('utf-8').decode(bytes);
+      }
+      return decodeURIComponent(payload);
+    } catch (e) { return ''; }
   }
 
   // -------- Search index --------
@@ -773,6 +824,7 @@ const Lumen = (() => {
     // Interactive walkthroughs + flowcharts
     initializeTours($('#page'));
     initializeFlows($('#page'));
+    initializeEmbeds($('#page'));
 
     // Copy buttons
     $$('#page .copy-btn').forEach(btn => {
@@ -1226,6 +1278,38 @@ const Lumen = (() => {
     dots.forEach((d, i) => d.classList.toggle('active', i === idx));
   }
 
+  // -------- Local HTML embeds (:::embed file://ID) --------
+  // Binds the “Open in new tab” / “Save” actions on live-embedded HTML files.
+  function initializeEmbeds(rootEl) {
+    rootEl.querySelectorAll('.embed-local').forEach(wrap => {
+      if (wrap.dataset.ready) return;
+      wrap.dataset.ready = '1';
+      const id = wrap.dataset.embedId;
+      wrap.querySelectorAll('.embed-local-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const rec = fileStore[id];
+          if (!rec || !rec.dataUrl) { toast('Embedded file is no longer available', '⚠'); return; }
+          const htmlText = decodeDataUrl(rec.dataUrl);
+          const blob = new Blob([htmlText], { type: 'text/html;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          if (btn.dataset.embedAct === 'open') {
+            const w = window.open(url, '_blank');
+            if (!w) toast('Pop-up blocked — allow pop-ups to open the embed', '⚠');
+            setTimeout(() => URL.revokeObjectURL(url), 60000);
+          } else {
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = rec.name || 'embedded.html';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+          }
+        });
+      });
+    });
+  }
+
   // -------- Interactive screenshot walkthrough (:::tour) --------
   // Shows an app "in work" using only images: each step is a screenshot,
   // hotspots (x%,y% -> step) are clickable circles that jump between steps.
@@ -1405,6 +1489,9 @@ const Lumen = (() => {
   }
 
   function initializeFlows(rootEl) {
+    // TODO(v1.3): Better flow system — redesigned flow experience
+    // (requirements to be defined by the maintainer; keep the current
+    // 4-shape / 4-direction engine as the fallback).
     rootEl.querySelectorAll('.flow-chart').forEach(el => {
       if (el.dataset.ready) return;
       el.dataset.ready = '1';
@@ -1697,6 +1784,9 @@ const Lumen = (() => {
   }
 
   function setAccent(color) {
+    // TODO(v1.3): Color palette selection — offer curated palette presets
+    // (bg / text / accent / border sets) instead of a single accent color,
+    // so a whole look can be picked in one click.
     state.settings.accent = color || '';
     applyAccent();
     save();
@@ -1927,6 +2017,9 @@ const Lumen = (() => {
 
   // -------- New document from scratch --------
   function openNewDocModal() {
+    // TODO(v1.3): AI-ready empty document — ship a structured starter doc
+    // (clearly-marked placeholders, one section per topic, machine-readable
+    // headings) that can be handed to an AI assistant to fill in one pass.
     // Pre-fill with defaults if user hasn't customized, else current values
     $('#newDocName').value = state.doc.name !== 'Lumen' ? state.doc.name : 'My Documentation';
     $('#newDocDesc').value = state.doc.description !== 'A single-file static documentation engine' ? state.doc.description : '';
@@ -2112,9 +2205,10 @@ const Lumen = (() => {
     $('#editorPreview').innerHTML = renderMarkdown(text);
     // Initialize sliders in preview
     $('#editorPreview').querySelectorAll('.slider').forEach(s => initializeSlider(s));
-    // Walkthroughs + flowcharts in preview
+    // Walkthroughs + flowcharts + local embeds in preview
     initializeTours($('#editorPreview'));
     initializeFlows($('#editorPreview'));
+    initializeEmbeds($('#editorPreview'));
     // If KaTeX was not loaded at render time, math-placeholder elements exist — load KaTeX and render them
     const preview = $('#editorPreview');
     if (preview.querySelector('.math-placeholder')) {
@@ -2391,6 +2485,16 @@ const Lumen = (() => {
     if (ext === 'json') {
       const text = await file.text();
       return '```json\n' + text + '\n```';
+    }
+
+    // HTML — embed as a LIVE page, not as code. The file goes to the store
+    // and the page gets a :::embed file://ID block that renders it in a
+    // sandboxed iframe (with Open / Save actions). Exports carry it along.
+    if (ext === 'html' || ext === 'htm') {
+      const dataUrl = await fileToDataUrl(file, onProgress);
+      const id = saveFileToStore(name, 'html', dataUrl);
+      toast('Embedded ' + name + ' as a live page', '🌐');
+      return `:::embed\nfile://${id}\n:::`;
     }
 
     // Code files — insert as code block with language hint
@@ -2783,6 +2887,7 @@ const Lumen = (() => {
 
   // -------- Command palette --------
   const COMMANDS = [
+    { id: 'save-file', icon: '💾', label: 'Save this file — download a working copy', hint: 'Ctrl+S', run: exportSingleHTML },
     { id: 'toggle-theme', icon: '🎨', label: 'Cycle theme', hint: 'T', run: cycleTheme },
     { id: 'toggle-sidebar', icon: '☰', label: 'Toggle sidebar', hint: 'S', run: () => document.body.classList.toggle('sidebar-collapsed') },
     { id: 'toggle-toc', icon: '📋', label: 'Toggle on-page TOC', hint: 'O', run: () => document.body.classList.toggle('toc-collapsed') },
@@ -2932,10 +3037,14 @@ const Lumen = (() => {
       openCmd();
       return;
     }
-    // Cmd/Ctrl+S — save (prevent browser save)
+    // Cmd/Ctrl+S — SAVE. Inside the editor: save the page. Anywhere else:
+    // download a fresh standalone copy of the whole file. This works even
+    // where the browser's own “save page” fails (blob previews, iframes,
+    // web-views) — and it is how readers of an exported file save a copy.
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's') {
       e.preventDefault();
       if ($('#editorOverlay').classList.contains('open')) saveEditorPage();
+      else exportSingleHTML();
       return;
     }
     // In input — only Esc
@@ -2994,10 +3103,21 @@ const Lumen = (() => {
     load();
     // Bring IndexedDB-stored media into memory (needed for rendering file:// refs)
     try {
+      // Wait for any in-flight persist (embedded/migrated files) so the
+      // prune below can't race-delete files that are still being written.
+      if (fileStoreHydration) await fileStoreHydration;
       const stored = await FileDB.all();
       Object.keys(fileStore).forEach(k => { if (!stored[k]) delete fileStore[k]; });
       Object.assign(fileStore, stored);
     } catch (e) { /* IndexedDB unavailable — pages still work, media refs degrade */ }
+    // Belt & suspenders: files embedded in THIS file (exported HTML) must
+    // always resolve — even if IndexedDB is blocked (blob: previews, private
+    // mode) or the write failed. Re-add them after the prune.
+    if (window.__LUMEN_FILE_STORE__) {
+      Object.keys(window.__LUMEN_FILE_STORE__).forEach(k => {
+        if (!fileStore[k]) fileStore[k] = window.__LUMEN_FILE_STORE__[k];
+      });
+    }
     // Guard: an empty/invalid pages array should not brick the app
     if (!state.pages.length) {
       state.pages = [{
@@ -3111,9 +3231,11 @@ const Lumen = (() => {
     if (aiClose) aiClose.addEventListener('click', () => $('#aiModal').classList.remove('open'));
     const aiModalEl = $('#aiModal');
     if (aiModalEl) aiModalEl.addEventListener('click', (e) => { if (e.target.id === 'aiModal') aiModalEl.classList.remove('open'); });
-    // Export menu + single HTML button
+    // Export menu + single HTML button + Save button
     $('#exportBtn').addEventListener('click', () => $('#exportModal').classList.add('open'));
     $('#exportHtmlBtn').addEventListener('click', exportSingleHTML);
+    const saveFileBtn = $('#saveFileBtn');
+    if (saveFileBtn) saveFileBtn.addEventListener('click', exportSingleHTML);
     $('#closeExport').addEventListener('click', () => $('#exportModal').classList.remove('open'));
     $('#exportModal').addEventListener('click', (e) => { if (e.target.id === 'exportModal') $('#exportModal').classList.remove('open'); });
     $('#exportOptionHtml').addEventListener('click', () => { $('#exportModal').classList.remove('open'); exportSingleHTML(); });
@@ -3173,7 +3295,7 @@ const Lumen = (() => {
       snapshot('Before reset');
       localStorage.removeItem(STORAGE_KEY);
       state.pages = getDefaultDocs().slice();
-      state.doc = { name: 'Lumen', description: 'A single-file static documentation engine', version: '1.1', author: '', icon: '✦' };
+      state.doc = { name: 'Lumen', description: 'A single-file static documentation engine', version: '1.2', author: '', icon: '✦' };
       state.bookmarks = [];
       state.annotations = {};
       state.currentPageId = null;
@@ -3383,6 +3505,7 @@ const Lumen = (() => {
     exportMarkdown,
     exportSingleHTML,
     exportJSON,
+    handleFileDrop,
     deletePage,
     toggleBookmark,
     checkForUpdates,
